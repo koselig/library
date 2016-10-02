@@ -1,14 +1,14 @@
 <?php
-namespace JordanDoyle\Larapress\Providers;
+namespace Koselig\Providers;
 
 use Illuminate\Container\Container;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use JordanDoyle\Larapress\Routing\ArchiveRoute;
-use JordanDoyle\Larapress\Routing\PageRoute;
-use JordanDoyle\Larapress\Routing\SingularRoute;
-use JordanDoyle\Larapress\Routing\TemplateRoute;
+use Koselig\Routing\ArchiveRoute;
+use Koselig\Routing\PageRoute;
+use Koselig\Routing\SingularRoute;
+use Koselig\Routing\TemplateRoute;
 
 /**
  * Provides routing methods for Wordpress-related routes.

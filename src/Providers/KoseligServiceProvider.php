@@ -1,10 +1,10 @@
 <?php
-namespace JordanDoyle\Larapress\Providers;
+namespace Koselig\Providers;
 
 use Illuminate\Container\Container;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use JordanDoyle\Larapress\Support\TemplateRoute;
+use Koselig\Support\TemplateRoute;
 use Route;
 
 /**
@@ -12,7 +12,7 @@ use Route;
  *
  * @author Jordan Doyle <jordan@doyle.wf>
  */
-class LarapressServiceProvider extends ServiceProvider
+class KoseligServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.

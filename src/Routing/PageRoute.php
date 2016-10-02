@@ -1,9 +1,9 @@
 <?php
-namespace JordanDoyle\Larapress\Routing;
+namespace Koselig\Routing;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
-use JordanDoyle\Larapress\Support\Wordpress;
+use Koselig\Support\Wordpress;
 
 /**
  * Single page route, this route is matched when the

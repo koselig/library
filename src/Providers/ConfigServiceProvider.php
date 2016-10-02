@@ -1,5 +1,5 @@
 <?php
-namespace JordanDoyle\Larapress\Providers;
+namespace Koselig\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

@@ -1,5 +1,5 @@
 <?php
-namespace JordanDoyle\Larapress\Support;
+namespace Koselig\Support;
 
 /**
  * Provides various base Wordpress helper functionality in a nice
