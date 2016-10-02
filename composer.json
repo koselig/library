@@ -1,5 +1,5 @@
 {
-    "name": "w4/larapress",
+    "name": "w4/larapress-lib",
     "description": "Integrate Wordpress into Laravel seamlessly",
     "license": "GPL-3.0+",
     "authors": [
