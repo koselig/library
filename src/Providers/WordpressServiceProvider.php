@@ -2,7 +2,7 @@
 
 namespace JordanDoyle\Larapress\Providers;
 
-use Illuminate\Support\Facades\App;
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,7 +24,11 @@ class WordpressServiceProvider extends ServiceProvider
     {
         // get the path wordpress is installed in
         define('WP_PATH',
-            json_decode(file_get_contents(base_path('composer.json')), true)['extra']['wordpress-install-dir'] . '/');
+            json_decode(
+                file_get_contents($this->app->basePath() . DIRECTORY_SEPARATOR . 'composer.json'),
+                true
+            )['extra']['wordpress-install-dir'] . '/'
+        );
 
         $this->setConfig();
         $this->triggerHooks();
@@ -53,16 +57,16 @@ class WordpressServiceProvider extends ServiceProvider
         define('DB_COLLATE', $db['collation']);
         define('DB_PREFIX', $table_prefix);
 
-        define('AUTH_KEY', config('app.auth_key'));
-        define('SECURE_AUTH_KEY', config('app.secure_auth_key'));
-        define('LOGGED_IN_KEY', config('app.logged_in_key'));
-        define('NONCE_KEY', config('app.nonce_key'));
-        define('AUTH_SALT', config('app.auth_salt'));
-        define('SECURE_AUTH_SALT', config('app.secure_auth_salt'));
-        define('LOGGED_IN_SALT', config('app.logged_in_salt'));
-        define('NONCE_SALT', config('app.nonce_salt'));
+        define('AUTH_KEY', $this->app->make('config')->get('wordpress.auth_key'));
+        define('SECURE_AUTH_KEY', $this->app->make('config')->get('wordpress.secure_auth_key'));
+        define('LOGGED_IN_KEY', $this->app->make('config')->get('wordpress.logged_in_key'));
+        define('NONCE_KEY', $this->app->make('config')->get('wordpress.nonce_key'));
+        define('AUTH_SALT', $this->app->make('config')->get('wordpress.auth_salt'));
+        define('SECURE_AUTH_SALT', $this->app->make('config')->get('wordpress.secure_auth_salt'));
+        define('LOGGED_IN_SALT', $this->app->make('config')->get('wordpress.logged_in_salt'));
+        define('NONCE_SALT', $this->app->make('config')->get('wordpress.nonce_salt'));
 
-        define('WP_DEBUG', config('app.debug'));
+        define('WP_DEBUG', $this->app->make('config')->get('app.debug'));
         define('SAVEQUERIES', WP_DEBUG);
         define('WP_DEBUG_DISPLAY', WP_DEBUG);
         define('SCRIPT_DEBUG', WP_DEBUG);
@@ -70,16 +74,16 @@ class WordpressServiceProvider extends ServiceProvider
         define('DISALLOW_FILE_EDIT', true);
 
         if (!defined('ABSPATH')) {
-            define('ABSPATH', base_path(WP_PATH));
+            define('ABSPATH', $this->app->basePath() . DIRECTORY_SEPARATOR . WP_PATH);
         }
 
-        define('WP_SITEURL', url(str_replace('public/', '', WP_PATH)));
-        define('WP_HOME', url('/'));
+        define('WP_SITEURL', $this->app->make(UrlGenerator::class)->to(str_replace('public/', '', WP_PATH)));
+        define('WP_HOME', $this->app->make(UrlGenerator::class)->to('/'));
 
-        define('WP_CONTENT_DIR', base_path('public/content'));
-        define('WP_CONTENT_URL', url('content'));
+        define('WP_CONTENT_DIR', $this->app->basePath() . DIRECTORY_SEPARATOR . 'public/content');
+        define('WP_CONTENT_URL', $this->app->make(UrlGenerator::class)->to('content'));
 
-        if (App::runningInConsole()) {
+        if ($this->app->runningInConsole()) {
             $_SERVER['SERVER_PROTOCOL'] = 'https';
         }
 

@@ -3,12 +3,12 @@ namespace JordanDoyle\Larapress\Providers;
 
 use Illuminate\Container\Container;
 use Illuminate\Routing\Router;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use JordanDoyle\Larapress\Routing\ArchiveRoute;
 use JordanDoyle\Larapress\Routing\PageRoute;
 use JordanDoyle\Larapress\Routing\SingularRoute;
 use JordanDoyle\Larapress\Routing\TemplateRoute;
-use Route;
 
 /**
  * Provides routing methods for Wordpress-related routes.
@@ -24,28 +24,30 @@ class RoutingServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $app = $this->app;
+
         // Router methods
-        Router::macro('template', function ($slug, $action) {
+        Router::macro('template', function ($slug, $action) use ($app) {
             $action = $this->formatAction($action);
 
             $route = (new TemplateRoute($action['method'], $slug, $action))
-                ->setRouter(app('router'))
-                ->setContainer(app(Container::class));
+                ->setRouter($app->make('router'))
+                ->setContainer($app->make(Container::class));
 
             return Route::getRoutes()->add($route);
         });
 
-        Router::macro('page', function ($slug, $action) {
+        Router::macro('page', function ($slug, $action) use ($app) {
             $action = $this->formatAction($action);
 
             $route = (new PageRoute($action['method'], $slug, $action))
-                ->setRouter(app('router'))
-                ->setContainer(app(Container::class));
+                ->setRouter($app->make('router'))
+                ->setContainer($app->make(Container::class));
 
             return Route::getRoutes()->add($route);
         });
 
-        Router::macro('archive', function ($postTypes = [], $action = []) {
+        Router::macro('archive', function ($postTypes = [], $action = []) use ($app) {
             if (empty($action)) {
                 $action = $postTypes;
                 $postTypes = [];
@@ -58,13 +60,13 @@ class RoutingServiceProvider extends ServiceProvider
             $action = $this->formatAction($action);
 
             $route = (new ArchiveRoute($action['method'], $postTypes, $action))
-                ->setRouter(app('router'))
-                ->setContainer(app(Container::class));
+                ->setRouter($app->make('router'))
+                ->setContainer($app->make(Container::class));
 
             return Route::getRoutes()->add($route);
         });
 
-        Router::macro('singular', function ($types, $action) {
+        Router::macro('singular', function ($types, $action) use ($app) {
             if (!is_array($types)) {
                 $types = [$types];
             }
@@ -72,8 +74,8 @@ class RoutingServiceProvider extends ServiceProvider
             $action = $this->formatAction($action);
 
             $route = (new SingularRoute($action['method'], $types, $action))
-                ->setRouter(app('router'))
-                ->setContainer(app(Container::class));
+                ->setRouter($app->make('router'))
+                ->setContainer($app->make(Container::class));
 
             return Route::getRoutes()->add($route);
         });
