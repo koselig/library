@@ -1,0 +1,19 @@
+{
+    "name": "w4/larapress",
+    "description": "Integrate Wordpress into Laravel seamlessly",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Jordan Doyle",
+            "email": "jordan@doyle.wf"
+        }
+    ],
+    "require": {
+        "illuminate/support": "5.3.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "JordanDoyle\\Larapress\\": "src/"
+        }
+    }
+}
