@@ -23,5 +23,6 @@ class LarapressServiceProvider extends ServiceProvider
     {
         $this->app->register(WordpressServiceProvider::class);
         $this->app->register(RoutingServiceProvider::class);
+        $this->app->register(ConfigServiceProvider::class);
     }
 }
