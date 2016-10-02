@@ -1,6 +1,6 @@
 <?php
 
-namespace JordanDoyle\Larapress\Providers;
+namespace Koselig\Providers;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
@@ -92,7 +92,7 @@ class WordpressServiceProvider extends ServiceProvider
 
     /**
      * Wordpress core hooks needed for the main functionality of
-     * Larapress.
+     * Koselig.
      *
      * @return void
      */

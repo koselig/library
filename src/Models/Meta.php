@@ -1,9 +1,9 @@
 <?php
-namespace JordanDoyle\Larapress\Models;
+namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use JordanDoyle\Larapress\Support\Wordpress;
+use Koselig\Support\Wordpress;
 
 /**
  * Table containing all metadata about a post.

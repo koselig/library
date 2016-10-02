@@ -1,5 +1,5 @@
 {
-    "name": "w4/larapress-lib",
+    "name": "koselig/koselig",
     "description": "Integrate Wordpress into Laravel seamlessly",
     "license": "GPL-3.0+",
     "authors": [
@@ -15,7 +15,7 @@
     },
     "autoload": {
         "psr-4": {
-            "JordanDoyle\\Larapress\\": "src/"
+            "Koselig\\": "src/"
         }
     }
 }
