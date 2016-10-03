@@ -11,6 +11,9 @@ engines:
     config:
       file_extensions: "php"
       rulesets: "codesize,controversial,design,phpmd.xml"
+    checks:
+      CyclomaticComplexity:
+        enabled: false
 ratings:
   paths:
   - "**.php"
