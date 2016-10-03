@@ -1,5 +1,4 @@
 <?php
-
 namespace Koselig\Providers;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
