@@ -9,10 +9,4 @@
         <exclude name="ShortVariable"/>
         <exclude name="ShortMethodName"/>
     </rule>
-
-    <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
-        <properties>
-            <property name="reportLevel" value="12"/>
-        </properties>
-    </rule>
 </ruleset>
