@@ -1,15 +1,9 @@
 <?php
 namespace Koselig\Providers;
 
-use Illuminate\Container\Container;
 use Illuminate\Routing\Router;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Koselig\Routing\ArchiveRoute;
-use Koselig\Routing\PageRoute;
 use Koselig\Routing\Routing;
-use Koselig\Routing\SingularRoute;
-use Koselig\Routing\TemplateRoute;
 
 /**
  * Provides routing methods for Wordpress-related routes.
