@@ -12,7 +12,7 @@
 
     <rule ref="rulesets/codesize.xml/CyclomaticComplexity">
         <properties>
-            <property name="reportLevel" value="11"/>
+            <property name="reportLevel" value="12"/>
         </properties>
     </rule>
 </ruleset>
