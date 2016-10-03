@@ -5,6 +5,7 @@ namespace Koselig\Providers;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Koselig\Support\Action;
 
 /**
  * Service provider for everything Wordpress, configures
@@ -71,8 +72,6 @@ class WordpressServiceProvider extends ServiceProvider
         define('WP_DEBUG_DISPLAY', WP_DEBUG);
         define('SCRIPT_DEBUG', WP_DEBUG);
 
-        define('DISALLOW_FILE_EDIT', true);
-
         if (!defined('ABSPATH')) {
             define('ABSPATH', $this->app->basePath() . DIRECTORY_SEPARATOR . WP_PATH);
         }
@@ -98,8 +97,23 @@ class WordpressServiceProvider extends ServiceProvider
      */
     protected function triggerHooks()
     {
-        add_filter('theme_page_templates', function ($page_templates) {
+        // register the user's templates
+        Action::hook('theme_page_templates', function ($page_templates) {
             return array_merge($page_templates, config('templates'));
         });
+
+        $this->registerPostTypes();
+    }
+
+    /**
+     * Register all the user's custom post types with Wordpress.
+     *
+     * @return void
+     */
+    protected function registerPostTypes()
+    {
+        foreach (config('posttypes') as $key => $value) {
+            register_post_type($key, $value);
+        }
     }
 }
