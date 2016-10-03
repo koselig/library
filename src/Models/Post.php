@@ -1,6 +1,7 @@
 <?php
 namespace Koselig\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -14,6 +15,29 @@ class Post extends Model
 {
     public $table = DB_PREFIX . 'posts';
     public $primaryKey = 'ID';
+
+    /**
+     * Get all the posts within a certain post type.
+     *
+     * @param Builder $query query to add the scope to
+     * @param string $name name of the post type
+     * @return Builder
+     */
+    public function scopePostType($query, $name)
+    {
+        return $query->where('post_type', $name);
+    }
+
+    /**
+     * Get all the posts which are published.
+     *
+     * @param Builder $query query to add the scope to
+     * @return Builder
+     */
+    public function scopePublished($query)
+    {
+        return $query->where('post_status', 'publish');
+    }
 
     /**
      * Get all the meta values that belong to this post.
