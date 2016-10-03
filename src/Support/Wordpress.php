@@ -12,6 +12,7 @@ class Wordpress
     /**
      * Get the current Wordpress query.
      *
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      * @return \WP_Query
      */
     public static function query()
