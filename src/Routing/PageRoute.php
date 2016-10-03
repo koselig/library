@@ -14,7 +14,7 @@ use Koselig\Support\Wordpress;
 class PageRoute extends Route
 {
     /**
-     * Format a nice string for php artisan route:list
+     * Format a nice string for php artisan route:list.
      *
      * @return string
      */

@@ -22,7 +22,7 @@ class Meta extends Model
     public static $cache = [];
 
     /**
-     * Get metadata for a page (or the current page)
+     * Get metadata for a page (or the current page).
      *
      * <code>Meta::get('my_meta_key');</code>
      * or
@@ -47,7 +47,7 @@ class Meta extends Model
         if (!isset(self::$cache[$page])) {
             // get all the meta values for a post, it's more than likely we're going to
             // need this again query, so we'll just grab all the results and cache them.
-            self::$cache[$page] = Meta::where('post_id', $page)->get();
+            self::$cache[$page] = self::where('post_id', $page)->get();
         }
 
         if ($name === null) {

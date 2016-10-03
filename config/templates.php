@@ -11,7 +11,6 @@ return [
     | application. This should be in slug => friendly name format.
     */
 
-    'home' => 'Homepage'
+    'home' => 'Homepage',
 
 ];
-

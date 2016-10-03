@@ -22,7 +22,7 @@ class Action
     }
 
     /**
-     * Run all filters hooked to <pre>$tag</pre> on the given <pre>$value</pre>
+     * Run all filters hooked to <pre>$tag</pre> on the given <pre>$value</pre>.
      *
      * @param string $tag tag to run
      * @param mixed $value value to run filters on

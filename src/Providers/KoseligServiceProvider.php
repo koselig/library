@@ -1,11 +1,7 @@
 <?php
 namespace Koselig\Providers;
 
-use Illuminate\Container\Container;
-use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Koselig\Support\TemplateRoute;
-use Route;
 
 /**
  * Registers all the other service providers used by this package.
