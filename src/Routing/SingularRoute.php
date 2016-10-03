@@ -37,7 +37,7 @@ class SingularRoute extends Route
     }
 
     /**
-     * Format a nice string for php artisan route:list
+     * Format a nice string for php artisan route:list.
      *
      * @return string
      */

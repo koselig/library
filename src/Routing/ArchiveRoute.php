@@ -14,7 +14,7 @@ use Koselig\Support\Wordpress;
 class ArchiveRoute extends Route
 {
     /**
-     * Post types for this archive route to hook onto
+     * Post types for this archive route to hook onto.
      *
      * @var array
      */
@@ -37,7 +37,7 @@ class ArchiveRoute extends Route
     }
 
     /**
-     * Format a nice string for php artisan route:list
+     * Format a nice string for php artisan route:list.
      *
      * @return string
      */

@@ -21,6 +21,6 @@ class User extends Model
      */
     public function posts()
     {
-        return $this->hasMany(User::class, 'post_author');
+        return $this->hasMany(self::class, 'post_author');
     }
 }

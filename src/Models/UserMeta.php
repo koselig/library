@@ -22,7 +22,7 @@ class UserMeta extends Model
     public static $cache = [];
 
     /**
-     * Get metadata for a user
+     * Get metadata for a user.
      *
      * @param int|string|null $user user to get meta for (or name of the meta item to get
      *                              if you want to get the current user's meta)
@@ -43,7 +43,7 @@ class UserMeta extends Model
         if (!isset(self::$cache[$user])) {
             // get all the meta values for a post, it's more than likely we're going to
             // need this again query, so we'll just grab all the results and cache them.
-            self::$cache[$user] = UserMeta::where('user_id', $user)->get();
+            self::$cache[$user] = self::where('user_id', $user)->get();
         }
 
         if ($name === null) {

@@ -18,6 +18,7 @@ class Wordpress
     public static function query()
     {
         global $wp_query;
+
         return $wp_query;
     }
 
@@ -43,7 +44,7 @@ class Wordpress
     }
 
     /**
-     * Check if the current page is a singular item (eg. a news post)
+     * Check if the current page is a singular item (eg. a news post).
      *
      * @param array|string $types
      * @return bool
@@ -54,7 +55,7 @@ class Wordpress
     }
 
     /**
-     * Check if the current page is an archive page
+     * Check if the current page is an archive page.
      *
      * @param string|array|null $types check if the archive page is for this type
      * @return bool
