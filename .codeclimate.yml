@@ -10,7 +10,7 @@ engines:
     enabled: true
     config:
       file_extensions: "php"
-      rulesets: "codesize,controversial,design,naming,phpmd.xml"
+      rulesets: "codesize,controversial,design,phpmd.xml"
 ratings:
   paths:
   - "**.php"
