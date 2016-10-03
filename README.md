@@ -1,6 +1,6 @@
 # Koselig
 
-[![StyleCI](https://styleci.io/repos/69823688/shield?style=flat)](https://styleci.io/repos/69823688)
+[![StyleCI](https://styleci.io/repos/69823688/shield?style=flat)](https://styleci.io/repos/69823688) [![Code Climate](https://codeclimate.com/github/koselig/library/badges/gpa.svg)](https://codeclimate.com/github/koselig/library)
 
 Seamlessly integrate Wordpress with Laravel.
 
