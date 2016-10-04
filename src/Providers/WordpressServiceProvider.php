@@ -59,6 +59,7 @@ class WordpressServiceProvider extends ServiceProvider
         $this->setLocationConstants();
 
         if ($this->app->runningInConsole()) {
+            // allow wordpress to run, even when running from console (ie. artisan compiling)
             $_SERVER['SERVER_PROTOCOL'] = 'https';
         }
 
