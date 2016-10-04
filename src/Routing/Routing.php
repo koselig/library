@@ -21,6 +21,8 @@ class Routing
             ->setRouter(app('router'))
             ->setContainer(app(Container::class));
 
+        $route = $this->applyStack($route);
+
         return Route::getRoutes()->add($route);
     }
 
@@ -38,6 +40,8 @@ class Routing
         $route = (new PageRoute($action['method'], $slug, $action))
             ->setRouter(app('router'))
             ->setContainer(app(Container::class));
+
+        $route = $this->applyStack($route);
 
         return Route::getRoutes()->add($route);
     }
@@ -67,6 +71,8 @@ class Routing
             ->setRouter(app('router'))
             ->setContainer(app(Container::class));
 
+        $route = $this->applyStack($route);
+
         return Route::getRoutes()->add($route);
     }
 
@@ -90,6 +96,8 @@ class Routing
             ->setRouter(app('router'))
             ->setContainer(app(Container::class));
 
+        $route = $this->applyStack($route);
+
         return Route::getRoutes()->add($route);
     }
 
@@ -99,7 +107,7 @@ class Routing
      * @param $action
      * @return array|string
      */
-    private function formatAction($action)
+    protected function formatAction($action)
     {
         if (!($action instanceof $action) && (is_string($action) || (isset($action['uses'])
                     && is_string($action['uses'])))) {
@@ -126,5 +134,30 @@ class Routing
         }
 
         return $action;
+    }
+
+    /**
+     * Apply group stack properties to the route and apply global "wheres" to the
+     * route.
+     *
+     * @param $route
+     * @return mixed
+     */
+    protected function applyStack($route)
+    {
+        // If we have groups that need to be merged, we will merge them now after this
+        // route has already been created and is ready to go. After we're done with
+        // the merge we will be ready to return the route back out to the caller.
+        if (Route::hasGroupStack()) {
+            $action = Route::mergeWithLastGroup($route->getAction());
+
+            $route->setAction($action);
+        }
+
+        $where = isset($route->getAction()['where']) ? $route->getAction()['where'] : [];
+
+        $route->where(array_merge(Route::getPatterns(), $where));
+
+        return $route;
     }
 }
