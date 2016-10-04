@@ -39,6 +39,10 @@ class PageRoute extends Route
             return false;
         }
 
+        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
+            return false;
+        }
+
         return $this->uri === $id;
     }
 }

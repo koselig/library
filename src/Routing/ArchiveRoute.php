@@ -55,6 +55,10 @@ class ArchiveRoute extends Route
      */
     public function matches(Request $request, $includingMethod = true)
     {
+        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
+            return false;
+        }
+
         return Wordpress::archive($this->postTypes);
     }
 }

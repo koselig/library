@@ -66,6 +66,36 @@ class Wordpress
     }
 
     /**
+     * Check if we are on a multisite, and optionally check the multisite we are on.
+     *
+     * @param null|int|array $id id (or ids) to check against the site, or null if you want to just check
+     *                           if we are actually on a multisite
+     * @return bool
+     */
+    public static function multisite($id = null)
+    {
+        if (is_array($id)) {
+            foreach ($id as $i) {
+                if (static::multisite($i)) {
+                    return true;
+                }
+            }
+        }
+
+        return $id === null ? is_multisite() : ($id === static::getMultisite());
+    }
+
+    /**
+     * Get the current multisite id.
+     *
+     * @return int
+     */
+    public static function getMultisite()
+    {
+        return get_current_blog_id();
+    }
+
+    /**
      * Get the current logged in user.
      *
      * @return \WP_User
