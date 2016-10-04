@@ -17,9 +17,7 @@ class Wordpress
      */
     public static function query()
     {
-        global $wp_query;
-
-        return $wp_query;
+        return $GLOBALS['wp_query'];
     }
 
     /**
