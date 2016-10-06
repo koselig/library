@@ -169,6 +169,23 @@ class WordpressServiceProvider extends ServiceProvider
             return array_merge($pageTemplates, config('templates'));
         });
 
+        // hacky fix to get network admin working, wordpress is basing the network admin path off of
+        // the default site's main link, which obviously doesn't work when the site and wordpress are in
+        // separate directories.
+        Action::hook('network_site_url', function ($url, $path, $scheme) {
+            if ($scheme == 'relative') {
+                $url = get_current_site()->path;
+            } else {
+                $url = set_url_scheme('http://' . get_current_site()->domain . get_current_site()->path, $scheme);
+            }
+
+            if ($path && is_string($path)) {
+                $url .= 'cms/' . ltrim($path, '/');
+            }
+
+            return $url;
+        }, 10, 3);
+
         $this->registerPostTypes();
     }
 
