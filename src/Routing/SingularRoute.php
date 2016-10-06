@@ -3,7 +3,9 @@ namespace Koselig\Routing;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Koselig\Models\Post;
 use Koselig\Support\Wordpress;
+use ReflectionFunction;
 
 /**
  * Singular route, this route is matched when the user
@@ -34,6 +36,30 @@ class SingularRoute extends Route
 
         $this->types = $this->uri;
         $this->uri = '';
+    }
+
+    /**
+     * Run the route action and return the response.
+     *
+     * @return mixed
+     */
+    protected function runCallable()
+    {
+        // bind the current post to the parameters of the function
+        $function = new ReflectionFunction($this->action['uses']);
+        $params = $function->getParameters();
+
+        foreach ($params as $param) {
+            if ($param->getClass()
+                && ($param->getClass()->isSubclassOf(Post::class) || $param->getClass()->getName() === Post::class)) {
+                $builder = $param->getClass()->getMethod('query')->invoke(null);
+                $post = $builder->find(Wordpress::id());
+
+                $this->setParameter($param->getName(), $post);
+            }
+        }
+
+        return parent::runCallable();
     }
 
     /**
