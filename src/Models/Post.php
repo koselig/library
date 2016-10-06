@@ -2,6 +2,7 @@
 namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -47,6 +48,31 @@ class Post extends Model
     public function meta()
     {
         return $this->hasMany(Meta::class);
+    }
+
+    /**
+     * Get meta values for this Post.
+     *
+     * @param array|string|null $key
+     * @return mixed
+     */
+    public function getMeta($key = null)
+    {
+        /**
+         * @var Collection
+         */
+        $meta = $this->meta;
+
+        if (is_array($key)) {
+            $meta = $meta->whereIn('meta_key', $key);
+        } elseif (is_string($key)) {
+            $meta = $meta->where('meta_key', $key)->first();
+            return $meta ? $meta->meta_value : null;
+        }
+
+        return $meta->mapWithKeys(function ($item) {
+            return [$item->meta_key => $item->meta_value];
+        })->all();
     }
 
     /**

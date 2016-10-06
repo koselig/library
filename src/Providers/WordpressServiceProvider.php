@@ -76,6 +76,7 @@ class WordpressServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             // allow wordpress to run, even when running from console (ie. artisan compiling)
             $_SERVER['SERVER_PROTOCOL'] = 'https';
+            $_SERVER['HTTP_HOST'] = parse_url(config('app.url'))['host'];
         }
 
         require ABSPATH . 'wp-settings.php';
