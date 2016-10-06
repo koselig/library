@@ -2,8 +2,10 @@
 namespace Koselig\Providers;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Koselig\Guards\WordpressGuard;
 use Koselig\Support\Action;
 
 /**
@@ -39,6 +41,18 @@ class WordpressServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register the Wordpress authentication services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        Auth::extend('wordpress', function ($app, $name, array $config) {
+            return new WordpressGuard(Auth::createUserProvider($config['provider']));
+        });
+    }
+
+    /**
      * Set up the configuration values that wp-config.php
      * does. Use all the values out of .env instead.
      *
@@ -57,6 +71,7 @@ class WordpressServiceProvider extends ServiceProvider
         $this->setDatabaseConstants($table_prefix);
         $this->setAuthenticationConstants();
         $this->setLocationConstants();
+        $this->setMultisiteConstants();
 
         if ($this->app->runningInConsole()) {
             // allow wordpress to run, even when running from console (ie. artisan compiling)
@@ -115,6 +130,29 @@ class WordpressServiceProvider extends ServiceProvider
 
         define('WP_CONTENT_DIR', $this->app->basePath() . DIRECTORY_SEPARATOR . 'public/content');
         define('WP_CONTENT_URL', $this->app->make(UrlGenerator::class)->to('content'));
+    }
+
+    /**
+     * Set up constants that will allow the user to use a multisite install of Wordpress.
+     */
+    private function setMultisiteConstants()
+    {
+        $multisite = $this->app->make('config')->get('wordpress.wp_allow_multisite');
+
+        if ($multisite) {
+            define('WP_ALLOW_MULTISITE', $multisite);
+
+            $enabled = $this->app->make('config')->get('wordpress.multisite');
+
+            if ($enabled) {
+                define('MULTISITE', $enabled);
+                define('SUBDOMAIN_INSTALL', $this->app->make('config')->get('wordpress.subdomain_install'));
+                define('DOMAIN_CURRENT_SITE', $this->app->make('config')->get('wordpress.domain_current_site'));
+                define('PATH_CURRENT_SITE', $this->app->make('config')->get('wordpress.path_current_site'));
+                define('SITE_ID_CURRENT_SITE', $this->app->make('config')->get('wordpress.site_id_current_site'));
+                define('BLOG_ID_CURRENT_SITE', $this->app->make('config')->get('wordpress.blog_id_current_site'));
+            }
+        }
     }
 
     /**
