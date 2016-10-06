@@ -94,7 +94,9 @@ class Wordpress
     }
 
     /**
-     * Get the current logged in user.
+     * Get the current logged in user. Generally, you shouldn't be using this
+     * function and should instead be using Auth::user() from Laravel to get
+     * the current logged in Wordpress user.
      *
      * @return \WP_User
      */

@@ -3,6 +3,7 @@ namespace Koselig\Routing;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
+use Koselig\Routing\Route as KoseligRoute;
 
 class Routing
 {

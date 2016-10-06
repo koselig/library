@@ -1,6 +1,8 @@
 <?php
 namespace Koselig\Models;
 
+use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -9,8 +11,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * @author Jordan Doyle <jordan@doyle.wf>
  */
-class User extends Model
+class User extends Model implements AuthenticatableContract
 {
+    use Authenticatable;
+
     public $table = DB_PREFIX . 'users';
     public $primaryKey = 'ID';
 
@@ -22,5 +26,15 @@ class User extends Model
     public function posts()
     {
         return $this->hasMany(self::class, 'post_author');
+    }
+
+    /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->user_pass;
     }
 }
