@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Koselig\Guards\WordpressGuard;
 use Koselig\Support\Action;
+use Koselig\Support\Wordpress;
 
 /**
  * Service provider for everything Wordpress, configures
@@ -174,13 +175,13 @@ class WordpressServiceProvider extends ServiceProvider
         // separate directories.
         Action::hook('network_site_url', function ($url, $path, $scheme) {
             if ($scheme == 'relative') {
-                $url = get_current_site()->path;
+                $url = Wordpress::site()->path;
             } else {
-                $url = set_url_scheme('http://' . get_current_site()->domain . get_current_site()->path, $scheme);
+                $url = set_url_scheme('http://' . Wordpress::site()->domain . Wordpress::site()->path, $scheme);
             }
 
             if ($path && is_string($path)) {
-                $url .= 'cms/' . ltrim($path, '/');
+                $url .= str_replace('public/', '', WP_PATH) . ltrim($path, '/');
             }
 
             return $url;

@@ -80,7 +80,7 @@ class Wordpress
             }
         }
 
-        return $id === null ? is_multisite() : ($id === static::getMultisite());
+        return $id === null ? is_multisite() : ($id === static::getSiteId());
     }
 
     /**
@@ -88,15 +88,27 @@ class Wordpress
      *
      * @return int
      */
-    public static function getMultisite()
+    public static function getSiteId()
     {
         return get_current_blog_id();
+    }
+
+    /**
+     * Get the current site that the user is currently browsing.
+     *
+     * @return \WP_Network
+     */
+    public static function site()
+    {
+        return get_current_site();
     }
 
     /**
      * Get the current logged in user. Generally, you shouldn't be using this
      * function and should instead be using Auth::user() from Laravel to get
      * the current logged in Wordpress user.
+     *
+     * Use of WP_User is deprecated, however this method will not be removed.
      *
      * @return \WP_User
      */
