@@ -2,10 +2,8 @@
 namespace Koselig\Providers;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use Koselig\Guards\WordpressGuard;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
@@ -39,18 +37,6 @@ class WordpressServiceProvider extends ServiceProvider
 
         // Set up the WordPress query.
         wp();
-    }
-
-    /**
-     * Register the Wordpress authentication services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        Auth::extend('wordpress', function ($app, $name, array $config) {
-            return new WordpressGuard(Auth::createUserProvider($config['provider']));
-        });
     }
 
     /**

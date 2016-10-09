@@ -1,5 +1,5 @@
 <?php
-namespace Koselig\Guards;
+namespace Koselig\Auth;
 
 use Illuminate\Auth\GuardHelpers;
 use Illuminate\Contracts\Auth\Authenticatable;
