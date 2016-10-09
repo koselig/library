@@ -1,5 +1,5 @@
 <?php
-namespace Koselig\Providers;
+namespace Koselig\Routing;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
