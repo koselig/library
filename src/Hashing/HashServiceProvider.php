@@ -4,7 +4,8 @@ namespace Koselig\Hashing;
 use Illuminate\Support\ServiceProvider;
 
 /**
- * Replace Laravel's hasher with Wordpress'.
+ * Provide 'wphash' service to allow for hashing using Wordpress'
+ * hashing methods.
  *
  * @author Jordan Doyle <jordan@doyle.wf>
  */
@@ -24,8 +25,8 @@ class HashServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('hash', function () {
-            return new WordpressHasher;
+        $this->app->singleton('wphash', function () {
+            return new WordpressHasher();
         });
     }
 
@@ -36,6 +37,6 @@ class HashServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return ['hash'];
+        return ['wphash'];
     }
 }
