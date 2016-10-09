@@ -14,11 +14,11 @@ class Action
      * @param $tag
      * @param callable $function
      * @param int $priority
-     * @param int $accepted_args
+     * @param int $acceptedArgs
      */
-    public static function hook($tag, callable $function, $priority = 10, $accepted_args = 1)
+    public static function hook($tag, callable $function, $priority = 10, $acceptedArgs = 1)
     {
-        add_filter($tag, $function, $priority, $accepted_args);
+        add_filter($tag, $function, $priority, $acceptedArgs);
     }
 
     /**
@@ -42,6 +42,6 @@ class Action
      */
     public static function trigger($tag, ...$params)
     {
-        return do_action($tag, $params);
+        return do_action($tag, ...$params);
     }
 }
