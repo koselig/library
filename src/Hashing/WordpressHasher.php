@@ -22,8 +22,6 @@ class WordpressHasher implements HasherContract
      */
     public function make($value, array $options = [])
     {
-        dd(wp_hash_password($value));
-
         return wp_hash_password($value);
     }
 
@@ -49,7 +47,7 @@ class WordpressHasher implements HasherContract
      */
     public function needsRehash($hashedValue, array $options = [])
     {
-        return false;
+        // if the hashed value is md5 it needs rehashing.
+        return strlen($hashedValue) <= 32;
     }
 }
-

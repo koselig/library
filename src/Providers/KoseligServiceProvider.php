@@ -3,6 +3,7 @@ namespace Koselig\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Koselig\Auth\AuthServiceProvider;
+use Koselig\Hashing\HashServiceProvider;
 use Koselig\Routing\RoutingServiceProvider;
 
 /**
@@ -28,5 +29,8 @@ class KoseligServiceProvider extends ServiceProvider
 
         // Authentication service provider
         $this->app->register(AuthServiceProvider::class);
+
+        // Hashing service provider
+        $this->app->register(HashServiceProvider::class);
     }
 }
