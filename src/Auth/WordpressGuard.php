@@ -105,6 +105,7 @@ class WordpressGuard implements StatefulGuard
     {
         if ($this->validate($credentials)) {
             $this->setUser($this->lastAttempted);
+
             return true;
         }
 
