@@ -3,7 +3,6 @@ namespace Koselig\Routing;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Koselig\Routing\Routing;
 
 /**
  * Provides routing methods for Wordpress-related routes.
