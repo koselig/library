@@ -3,6 +3,8 @@ namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Koselig\Exceptions\UnsatisfiedDependencyException;
+use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
 /**
@@ -44,21 +46,71 @@ class Meta extends Model
             $page = Wordpress::id();
         }
 
-        if (!isset(self::$cache[$page])) {
+        if (!isset(static::$cache[$page])) {
             // get all the meta values for a post, it's more than likely we're going to
             // need this again query, so we'll just grab all the results and cache them.
-            self::$cache[$page] = self::where('post_id', $page)->get();
+            static::$cache[$page] = static::where('post_id', $page)->get();
         }
 
         if ($name === null) {
-            return self::$cache[$page]->mapWithKeys(function ($item) {
+            return static::$cache[$page]->mapWithKeys(function ($item) {
                 return [$item->meta_key => $item->meta_value];
             })->all();
         }
 
-        $value = self::$cache[$page]->where('meta_key', $name)->first();
+        $value = static::$cache[$page]->where('meta_key', $name)->first();
 
         return empty($value) ? null : $value->meta_value;
+    }
+
+    /**
+     * Grab an ACF field from the database.
+     *
+     * @see Meta::get()
+     * @param int|string|null $page page to get meta for (or name of the meta item to get
+     *                              if you want to get the current page's meta)
+     * @param string|null $name
+     * @param bool $format whether to format this field or not
+     * @return mixed
+     * @throws UnsatisfiedDependencyException
+     */
+    public static function field($page = null, $name = null, $format = true)
+    {
+        if (!ctype_digit((string) $page) && $name === null) {
+            $name = $page;
+            $page = null;
+        }
+
+        if ($page === null) {
+            $page = Wordpress::id();
+        }
+
+        if (!function_exists('acf_format_value')) {
+            throw new UnsatisfiedDependencyException('Advanced Custom Fields must be installed to use field');
+        }
+
+        $value = static::get($page, $name);
+
+        if (is_serialized($value))
+            $value = @unserialize($value);
+
+        $field = static::get($page, '_' . $name);
+
+        if (!acf_is_field_key($field)) {
+            return null;
+        }
+
+        $field = get_field_object($field, $name, false, false);
+        $value = Action::filter('acf/load_value', $value, $page, $field);
+        $value = Action::filter('acf/load_value/type=' . $field['type'], $value, $page, $field);
+        $value = Action::filter('acf/load_value/name=' . $field['_name'], $value, $page, $field);
+        $value = Action::filter('acf/load_value/key=' . $field['key'], $value, $page, $field);
+
+        if ($format) {
+            $value = acf_format_value($value, $page, $field);
+        }
+
+        return $value;
     }
 
     /**
