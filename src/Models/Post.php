@@ -58,7 +58,7 @@ class Post extends Model
      */
     public function getMeta($key = null)
     {
-        /**
+        /*
          * @var Collection
          */
         $meta = $this->meta;
@@ -67,6 +67,7 @@ class Post extends Model
             $meta = $meta->whereIn('meta_key', $key);
         } elseif (is_string($key)) {
             $meta = $meta->where('meta_key', $key)->first();
+
             return $meta ? $meta->meta_value : null;
         }
 

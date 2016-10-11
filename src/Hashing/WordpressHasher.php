@@ -16,9 +16,8 @@ class WordpressHasher implements HasherContract
      *
      * @param  string $value
      * @param  array $options
-     * @return string
-     *
      * @throws \RuntimeException
+     * @return string
      */
     public function make($value, array $options = [])
     {
