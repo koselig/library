@@ -3,7 +3,9 @@ namespace Koselig\Routing;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Koselig\Models\Post;
 use Koselig\Support\Wordpress;
+use ReflectionFunction;
 
 /**
  * Template route, this route is matched then the Wordpress
@@ -21,6 +23,30 @@ class TemplateRoute extends Route
     public function uri()
     {
         return 'template/' . parent::uri();
+    }
+
+    /**
+     * Run the route action and return the response.
+     *
+     * @return mixed
+     */
+    protected function runCallable()
+    {
+        // bind the current post to the parameters of the function
+        $function = new ReflectionFunction($this->action['uses']);
+        $params = $function->getParameters();
+
+        foreach ($params as $param) {
+            if ($param->getClass()
+                && ($param->getClass()->isSubclassOf(Post::class) || $param->getClass()->getName() === Post::class)) {
+                $builder = $param->getClass()->getMethod('query')->invoke(null);
+                $post = $builder->find(Wordpress::id());
+
+                $this->setParameter($param->getName(), $post);
+            }
+        }
+
+        return parent::runCallable();
     }
 
     /**
