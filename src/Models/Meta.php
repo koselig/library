@@ -37,7 +37,7 @@ class Meta extends Model
      */
     public static function get($page = null, $name = null)
     {
-        if (is_subclass_of($page, Post::class)) {
+        if (is_object($page) && (is_subclass_of($page, Post::class) || $page instanceof Post)) {
             $page = $page->ID;
         }
 
