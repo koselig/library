@@ -71,8 +71,8 @@ class Meta extends Model
      *                              if you want to get the current page's meta)
      * @param string|null $name
      * @param bool $format whether to format this field or not
-     * @return mixed
      * @throws UnsatisfiedDependencyException
+     * @return mixed
      */
     public static function field($page = null, $name = null, $format = true)
     {
@@ -91,13 +91,14 @@ class Meta extends Model
 
         $value = static::get($page, $name);
 
-        if (is_serialized($value))
+        if (is_serialized($value)) {
             $value = @unserialize($value);
+        }
 
         $field = static::get($page, '_' . $name);
 
         if (!acf_is_field_key($field)) {
-            return null;
+            return;
         }
 
         $field = get_field_object($field, $name, false, false);
