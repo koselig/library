@@ -17,6 +17,10 @@ class Post extends Model
     public $table = DB_PREFIX . 'posts';
     public $primaryKey = 'ID';
 
+    public $timestamps = false;
+
+    public $dates = ['post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt'];
+
     /**
      * Get all the posts within a certain post type.
      *
