@@ -30,13 +30,17 @@ class Meta extends Model
      * or
      * <code>Meta::get(7, 'my_meta_key');</code>
      *
-     * @param int|string|null $page page to get meta for (or name of the meta item to get
-     *                              if you want to get the current page's meta)
+     * @param int|string|null|Post $page page to get meta for (or name of the meta item to get
+     *                                   if you want to get the current page's meta)
      * @param string|null $name
      * @return mixed
      */
     public static function get($page = null, $name = null)
     {
+        if (is_subclass_of($page, Post::class)) {
+            $page = $page->ID;
+        }
+
         if (!ctype_digit((string) $page) && $name === null) {
             $name = $page;
             $page = null;
