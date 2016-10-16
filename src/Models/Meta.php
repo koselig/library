@@ -71,8 +71,8 @@ class Meta extends Model
      * Grab an ACF field from the database.
      *
      * @see Meta::get()
-     * @param int|string|null $page page to get meta for (or name of the meta item to get
-     *                              if you want to get the current page's meta)
+     * @param int|string|null|Post $page page to get meta for (or name of the meta item to get
+     *                                   if you want to get the current page's meta)
      * @param string|null $name
      * @param bool $format whether to format this field or not
      * @throws UnsatisfiedDependencyException
@@ -80,6 +80,10 @@ class Meta extends Model
      */
     public static function acf($page = null, $name = null, $format = true)
     {
+        if (is_object($page) && (is_subclass_of($page, Post::class) || $page instanceof Post)) {
+            $page = $page->ID;
+        }
+
         if (!ctype_digit((string) $page) && $name === null) {
             $name = $page;
             $page = null;
