@@ -2,6 +2,7 @@
 namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Koselig\Support\Wordpress;
 
 /**
  * Table containing all Wordpress options.
@@ -13,6 +14,22 @@ class Option extends Model
     protected $primaryKey = 'option_id';
     protected $table = DB_PREFIX . 'options';
     public $timestamps = false;
+
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param  array $attributes
+     * @return void
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // Set the current table to the site's own table if we're in a multisite
+        if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
+            $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_options');
+        }
+    }
 
     /**
      * Get an option by its name.
