@@ -14,7 +14,8 @@ use Koselig\Support\Wordpress;
  */
 class Meta extends Model
 {
-    public $table = DB_PREFIX . 'postmeta';
+    protected $table = DB_PREFIX . 'postmeta';
+    public $timestamps = false;
 
     /**
      * Cache for all meta values.

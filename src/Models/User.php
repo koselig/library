@@ -15,8 +15,10 @@ class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
 
-    public $table = DB_PREFIX . 'users';
-    public $primaryKey = 'ID';
+    protected $table = DB_PREFIX . 'users';
+    protected $primaryKey = 'ID';
+    protected $dates = ['user_registered'];
+    public $timestamps = false;
 
     /**
      * Get all the posts that belong to this user.
@@ -25,7 +27,7 @@ class User extends Model implements AuthenticatableContract
      */
     public function posts()
     {
-        return $this->hasMany(self::class, 'post_author');
+        return $this->hasMany(Post::class, 'post_author');
     }
 
     /**
@@ -36,5 +38,15 @@ class User extends Model implements AuthenticatableContract
     public function getAuthPassword()
     {
         return $this->user_pass;
+    }
+
+    /**
+     * Get a link to this user's author page.
+     *
+     * @return string
+     */
+    public function link()
+    {
+        return get_author_posts_url($this->ID, $this->display_name);
     }
 }

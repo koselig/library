@@ -35,7 +35,7 @@ class SingularRoute extends Route
         parent::__construct($methods, $types, $action);
 
         $this->types = $this->uri;
-        $this->uri = '';
+        $this->uri = 'singular/' . implode('/', $this->types);
     }
 
     /**
@@ -60,16 +60,6 @@ class SingularRoute extends Route
         }
 
         return parent::runCallable();
-    }
-
-    /**
-     * Format a nice string for php artisan route:list.
-     *
-     * @return string
-     */
-    public function uri()
-    {
-        return 'singular/' . implode('/', $this->types);
     }
 
     /**

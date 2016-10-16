@@ -16,13 +16,17 @@ use ReflectionFunction;
 class PageRoute extends Route
 {
     /**
-     * Format a nice string for php artisan route:list.
+     * Create a new Route instance.
      *
-     * @return string
+     * @param  array|string $methods
+     * @param  array $users
+     * @param  \Closure|array $action
+     * @return void
      */
-    public function uri()
+    public function __construct($methods, $users, $action)
     {
-        return 'page/' . parent::uri();
+        parent::__construct($methods, $users, $action);
+        $this->uri = 'page/' . $this->uri();
     }
 
     /**

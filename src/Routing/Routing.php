@@ -10,7 +10,7 @@ class Routing
      * Register a new template route with the router.
      *
      * @param  string $slug slug to match
-     * @param  \Closure|array|string|null $action
+     * @param  callable|array|string|null $action
      * @return \Illuminate\Routing\Route
      */
     public function template($slug, $action)
@@ -30,7 +30,7 @@ class Routing
      * Register a new page route with the router.
      *
      * @param  string $slug slug to match
-     * @param  \Closure|array|string|null $action
+     * @param  callable|array|string|null $action
      * @return \Illuminate\Routing\Route
      */
     public function page($slug, $action)
@@ -50,8 +50,8 @@ class Routing
      * Register a new archive route with the router. Optionally supply
      * the post types you'd like to supply with this route.
      *
-     * @param \Closure|string|array $postTypes
-     * @param  \Closure|array|string|null $action
+     * @param callable|string|array $postTypes
+     * @param callable|array|string|null $action
      * @return \Illuminate\Routing\Route
      */
     public function archive($postTypes = [], $action = [])
@@ -93,6 +93,37 @@ class Routing
         $action = $this->formatAction($action);
 
         $route = (new SingularRoute($action['method'], $types, $action))
+            ->setRouter(app('router'))
+            ->setContainer(app(Container::class));
+
+        $route = $this->applyStack($route);
+
+        return Route::getRoutes()->add($route);
+    }
+
+    /**
+     * Register a author route with the router. This allows the user to
+     * create pages for an author or authors. Optionally supply the authors
+     * you'd like to supply using this route.
+     *
+     * @param callable|array|int $users authors to handle by this route
+     * @param callable|array|string|null $action
+     * @return mixed
+     */
+    public function author($users, $action = [])
+    {
+        if (empty($action)) {
+            $action = $users;
+            $users = [];
+        }
+
+        if (!is_array($users)) {
+            $users = [$users];
+        }
+
+        $action = $this->formatAction($action);
+
+        $route = (new AuthorRoute($action['method'], $users, $action))
             ->setRouter(app('router'))
             ->setContainer(app(Container::class));
 

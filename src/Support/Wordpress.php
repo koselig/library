@@ -1,6 +1,9 @@
 <?php
 namespace Koselig\Support;
 
+use Koselig\Facades\Query;
+use Koselig\Models\User;
+
 /**
  * Provides various base Wordpress helper functionality in a nice
  * OO way.
@@ -9,17 +12,6 @@ namespace Koselig\Support;
  */
 class Wordpress
 {
-    /**
-     * Get the current Wordpress query.
-     *
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
-     * @return \WP_Query
-     */
-    public static function query()
-    {
-        return $GLOBALS['wp_query'];
-    }
-
     /**
      * Get the current page id.
      *
@@ -31,17 +23,6 @@ class Wordpress
     }
 
     /**
-     * Get the slug of the template of a page.
-     *
-     * @param string $page
-     * @return false|string
-     */
-    public static function templateSlug($page = null)
-    {
-        return get_page_template_slug($page);
-    }
-
-    /**
      * Check if the current page is a singular item (eg. a news post).
      *
      * @param array|string $types
@@ -49,7 +30,7 @@ class Wordpress
      */
     public static function singular($types = '')
     {
-        return is_singular($types);
+        return Query::singular($types);
     }
 
     /**
@@ -60,7 +41,28 @@ class Wordpress
      */
     public static function archive($types = null)
     {
-        return $types === null || empty($types) ? is_archive() : is_post_type_archive($types);
+        return $types === null || empty($types) ? Query::archive() : Query::postTypeArchive($types);
+    }
+
+    /**
+     * Check if the current page is an author page.
+     *
+     * @param int|array|User $users
+     * @return bool
+     */
+    public static function author($users = [])
+    {
+        if (!is_array($users)) {
+            $users = [$users];
+        }
+
+        foreach ($users as $key => $user) {
+            if ($user instanceof User) {
+                $users[$key] = $user->ID;
+            }
+        }
+
+        return Query::author($users);
     }
 
     /**
@@ -110,6 +112,7 @@ class Wordpress
      *
      * Use of WP_User is deprecated, however this method will not be removed.
      *
+     * @deprecated use <code>Auth::user()</code> instead.
      * @return \WP_User
      */
     public static function currentUser()
