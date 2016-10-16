@@ -3,6 +3,7 @@ namespace Koselig\Routing;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Koselig\Http\Request;
 
 /**
  * Provides routing methods for Wordpress-related routes.
@@ -18,6 +19,8 @@ class RoutingServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->alias('request', Request::class);
+
         $routing = new Routing;
 
         // Router methods
