@@ -2,7 +2,6 @@
 namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -23,6 +22,20 @@ class Post extends Model
     public $timestamps = false;
 
     /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('post_status', 'publish');
+        });
+    }
+
+    /**
      * Get all the posts within a certain post type.
      *
      * @param Builder $query query to add the scope to
@@ -35,14 +48,14 @@ class Post extends Model
     }
 
     /**
-     * Get all the posts which are published.
+     * Get a post by its slug.
      *
-     * @param Builder $query query to add the scope to
-     * @return Builder
+     * @param $slug
+     * @return static
      */
-    public function scopePublished($query)
+    public static function findBySlug($slug)
     {
-        return $query->where('post_status', 'publish');
+        return static::where('post_name', $slug)->first();
     }
 
     /**
