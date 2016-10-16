@@ -94,27 +94,35 @@ class Post extends Model
 
         $meta = $this->getMeta($key);
 
-        foreach ($meta as $key => $value)
+        if (!is_array($meta)) {
+            $meta = [$key => $meta];
+            $wantsArray = false;
+        } else {
+            $wantsArray = true;
+        }
+
+        foreach ($meta as $k => $value)
         {
+            $field = $this->getMeta('_' . $k);
+
+            if (!acf_is_field_key($field)) {
+                unset($meta[$k]);
+                continue;
+            }
+
             if (is_serialized($value)) {
                 $value = @unserialize($value);
             }
 
-            $field = $this->getMeta('_' . $key);
+            $field = get_field_object($field, $k, false, false);
 
-            if (!acf_is_field_key($field)) {
-                unset($meta[$key]);
+            // unset subfields if the user didn't ask for it specifically
+            if (((is_array($key) && !in_array($k, $key)) && $k !== $key || $key === null) && acf_is_sub_field($field)) {
+                unset($meta[$k]);
                 continue;
             }
 
-            $field = get_field_object($field, $key, false, false);
-
-            if (acf_is_sub_field($field)) {
-                unset($meta[$key]);
-                continue;
-            }
-
-            $value = Action::filter('acf/load_value', $value, $key, $field);
+            $value = Action::filter('acf/load_value', $value, $k, $field);
             $value = Action::filter('acf/load_value/type=' . $field['type'], $value, $this->ID, $field);
             $value = Action::filter('acf/load_value/name=' . $field['_name'], $value, $this->ID, $field);
             $value = Action::filter('acf/load_value/key=' . $field['key'], $value, $this->ID, $field);
@@ -123,10 +131,10 @@ class Post extends Model
                 $value = acf_format_value($value, $this->ID, $field);
             }
 
-            $meta[$key] = $value;
+            $meta[$k] = $value;
         }
 
-        return $meta;
+        return $wantsArray ? $meta : collect($meta)->first();
     }
 
     /**
