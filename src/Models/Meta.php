@@ -14,6 +14,7 @@ use Koselig\Support\Wordpress;
  */
 class Meta extends Model
 {
+    protected $primaryKey = 'meta_id';
     protected $table = DB_PREFIX . 'postmeta';
     public $timestamps = false;
 
