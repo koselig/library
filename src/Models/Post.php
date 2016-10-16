@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Koselig\Exceptions\UnsatisfiedDependencyException;
 use Koselig\Support\Action;
+use WP_Post;
 
 /**
  * Table containing all the items within the CMS.
@@ -16,12 +17,10 @@ use Koselig\Support\Action;
  */
 class Post extends Model
 {
-    public $table = DB_PREFIX . 'posts';
-    public $primaryKey = 'ID';
-
+    protected $table = DB_PREFIX . 'posts';
+    protected $primaryKey = 'ID';
+    protected $dates = ['post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt'];
     public $timestamps = false;
-
-    public $dates = ['post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt'];
 
     /**
      * Get all the posts within a certain post type.
@@ -138,6 +137,75 @@ class Post extends Model
     }
 
     /**
+     * Get the categories of this post.
+     *
+     * @see get_the_category
+     * @return array
+     */
+    public function category()
+    {
+        return get_the_category($this->ID);
+    }
+
+    /**
+     * Get the permalink for this post.
+     *
+     * @see get_permalink
+     * @return false|string
+     */
+    public function link()
+    {
+        return get_permalink($this->toWordpressPost());
+    }
+
+    /**
+     * Get the tags of this post.
+     *
+     * @see get_the_tags
+     * @return array|false|\WP_Error
+     */
+    public function tags()
+    {
+        return get_the_tags($this->ID);
+    }
+
+    /**
+     * Get the thumbnail of this post
+     *
+     * @see get_the_post_thumbnail
+     * @param string $size
+     * @param string $attr
+     * @return string
+     */
+    public function thumbnail($size = 'post-thumbnail', $attr = '')
+    {
+        return get_the_post_thumbnail($this->toWordpressPost(), $size, $attr);
+    }
+
+    /**
+     * Get the excerpt of this post.
+     *
+     * @return string
+     */
+    public function excerpt()
+    {
+        dd($this);
+        return Action::filter('get_the_excerpt', $this->post_excerpt);
+    }
+
+    /**
+     * Get the all the terms of this post.
+     *
+     * @see get_the_terms
+     * @param $taxonomy
+     * @return array|false|\WP_Error
+     */
+    public function terms($taxonomy)
+    {
+        return get_the_terms($this->toWordpressPost(), $taxonomy);
+    }
+
+    /**
      * Get the author that this post belongs to.
      *
      * @return BelongsTo
@@ -145,5 +213,27 @@ class Post extends Model
     public function author()
     {
         return $this->belongsTo(User::class, 'post_author');
+    }
+
+    /**
+     * Get the classes that should be applied to this post.
+     *
+     * @see get_post_class
+     * @return string
+     */
+    public function classes()
+    {
+        return implode(' ', get_post_class('', $this->toWordpressPost()));
+    }
+
+    /**
+     * Get the {@link WP_Post} instance for this Post.
+     *
+     * @deprecated
+     * @return WP_Post
+     */
+    public function toWordpressPost()
+    {
+        return new WP_Post((object) $this->toArray());
     }
 }

@@ -12,14 +12,15 @@ use Koselig\Support\Wordpress;
  */
 class UserMeta extends Model
 {
-    public $table = DB_PREFIX . 'usermeta';
+    protected $table = DB_PREFIX . 'usermeta';
+    public $timestamps = false;
 
     /**
      * Cache for all meta values.
      *
      * @var array
      */
-    public static $cache = [];
+    private static $cache = [];
 
     /**
      * Get metadata for a user.
@@ -37,7 +38,7 @@ class UserMeta extends Model
         }
 
         if ($user === null) {
-            $user = Wordpress::currentUser()->ID;
+            $user = auth()->id();
         }
 
         if (!isset(self::$cache[$user])) {

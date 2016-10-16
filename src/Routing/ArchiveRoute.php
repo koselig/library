@@ -33,17 +33,7 @@ class ArchiveRoute extends Route
         parent::__construct($methods, $postTypes, $action);
 
         $this->postTypes = $this->uri;
-        $this->uri = '';
-    }
-
-    /**
-     * Format a nice string for php artisan route:list.
-     *
-     * @return string
-     */
-    public function uri()
-    {
-        return 'archive/' . (implode('/', $this->postTypes) ?: 'all');
+        $this->uri = 'archive/' . (implode('/', $this->postTypes) ?: 'all');
     }
 
     /**

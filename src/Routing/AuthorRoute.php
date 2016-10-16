@@ -1,33 +1,42 @@
 <?php
 namespace Koselig\Routing;
 
+use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
-use Koselig\Http\Request;
-use Koselig\Models\Post;
+use Koselig\Facades\Query;
+use Koselig\Models\User;
 use Koselig\Support\Wordpress;
 use ReflectionFunction;
 
 /**
- * Template route, this route is matched then the Wordpress
- * template set in the backend equals the slug of this route.
+ * Author page route, used when Wordpress reports
+ * this page is an author page.
  *
  * @author Jordan Doyle <jordan@doyle.wf>
  */
-class TemplateRoute extends Route
+class AuthorRoute extends Route
 {
+    /**
+     * Users for this author route to hook onto.
+     *
+     * @var array
+     */
+    private $users;
+
     /**
      * Create a new Route instance.
      *
      * @param  array|string $methods
-     * @param  array $types
+     * @param  array $users
      * @param  \Closure|array $action
      * @return void
      */
-    public function __construct($methods, $types, $action)
+    public function __construct($methods, $users, $action)
     {
-        parent::__construct($methods, $types, $action);
+        parent::__construct($methods, $users, $action);
 
-        $this->uri = 'template/' . parent::uri();
+        $this->users = $this->uri;
+        $this->uri = 'author/' . (implode('/', $this->users) ?: 'all');
     }
 
     /**
@@ -43,9 +52,9 @@ class TemplateRoute extends Route
 
         foreach ($params as $param) {
             if ($param->getClass()
-                && ($param->getClass()->isSubclassOf(Post::class) || $param->getClass()->getName() === Post::class)) {
+                && ($param->getClass()->isSubclassOf(User::class) || $param->getClass()->getName() === User::class)) {
                 $builder = $param->getClass()->getMethod('query')->invoke(null);
-                $post = $builder->find(Wordpress::id());
+                $post = $builder->find(Query::queriedObject()->ID);
 
                 $this->setParameter($param->getName(), $post);
             }
@@ -57,25 +66,16 @@ class TemplateRoute extends Route
     /**
      * Determine if the route matches given request.
      *
-     * @param  Request $request
+     * @param  \Illuminate\Http\Request $request
      * @param  bool $includingMethod
      * @return bool
      */
     public function matches(Request $request, $includingMethod = true)
     {
-        $post = $request->post();
-
-        if (!$post) {
-            // the page we are on either isn't in the CMS or doesn't have a template.
-            return false;
-        }
-
-        $slug = $post->getMeta('_wp_page_template');
-
         if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
             return false;
         }
 
-        return $this->uri === $slug;
+        return Wordpress::author($this->users);
     }
 }
