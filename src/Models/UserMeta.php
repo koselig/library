@@ -13,6 +13,7 @@ use Koselig\Support\Wordpress;
 class UserMeta extends Model
 {
     protected $table = DB_PREFIX . 'usermeta';
+    protected $primaryKey = 'umeta_id';
     public $timestamps = false;
 
     /**
