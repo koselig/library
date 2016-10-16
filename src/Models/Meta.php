@@ -80,6 +80,10 @@ class Meta extends Model
      */
     public static function acf($page = null, $name = null, $format = true)
     {
+        if (!function_exists('acf_format_value')) {
+            throw new UnsatisfiedDependencyException('Advanced Custom Fields must be installed to use field');
+        }
+
         if (is_object($page) && (is_subclass_of($page, Post::class) || $page instanceof Post)) {
             $page = $page->ID;
         }
@@ -91,10 +95,6 @@ class Meta extends Model
 
         if ($page === null) {
             $page = Wordpress::id();
-        }
-
-        if (!function_exists('acf_format_value')) {
-            throw new UnsatisfiedDependencyException('Advanced Custom Fields must be installed to use field');
         }
 
         $value = static::get($page, $name);
