@@ -98,9 +98,6 @@ class Post extends Model
         {
             if (is_serialized($value)) {
                 $value = @unserialize($value);
-            } else {
-                unset($meta[$key]);
-                continue;
             }
 
             $field = $this->getMeta('_' . $key);
@@ -111,6 +108,12 @@ class Post extends Model
             }
 
             $field = get_field_object($field, $key, false, false);
+
+            if (acf_is_sub_field($field)) {
+                unset($meta[$key]);
+                continue;
+            }
+
             $value = Action::filter('acf/load_value', $value, $key, $field);
             $value = Action::filter('acf/load_value/type=' . $field['type'], $value, $this->ID, $field);
             $value = Action::filter('acf/load_value/name=' . $field['_name'], $value, $this->ID, $field);
