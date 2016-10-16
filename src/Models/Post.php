@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Koselig\Exceptions\UnsatisfiedDependencyException;
 use Koselig\Support\Action;
+use Koselig\Support\Wordpress;
 use WP_Post;
 
 /**
@@ -20,6 +21,22 @@ class Post extends Model
     protected $primaryKey = 'ID';
     protected $dates = ['post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt'];
     public $timestamps = false;
+
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param  array $attributes
+     * @return void
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // Set the current table to the site's own table if we're in a multisite
+        if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
+            $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_posts');
+        }
+    }
 
     /**
      * The "booting" method of the model.
