@@ -50,4 +50,14 @@ class User extends Model implements AuthenticatableContract
     {
         return get_author_posts_url($this->ID, $this->display_name);
     }
+
+    /**
+     * Get all the comments that belong to this user.
+     *
+     * @return HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
