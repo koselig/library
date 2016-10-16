@@ -78,7 +78,7 @@ class Meta extends Model
      * @throws UnsatisfiedDependencyException
      * @return mixed
      */
-    public static function field($page = null, $name = null, $format = true)
+    public static function acf($page = null, $name = null, $format = true)
     {
         if (!ctype_digit((string) $page) && $name === null) {
             $name = $page;
@@ -102,7 +102,7 @@ class Meta extends Model
         $field = static::get($page, '_' . $name);
 
         if (!acf_is_field_key($field)) {
-            return;
+            return null;
         }
 
         $field = get_field_object($field, $name, false, false);
