@@ -86,6 +86,16 @@ class Post extends Model
     }
 
     /**
+     * Get all the comments that belong to this post.
+     *
+     * @return HasMany
+     */
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'comment_post_ID');
+    }
+
+    /**
      * Get meta values for this Post.
      *
      * @param array|string|null $key
