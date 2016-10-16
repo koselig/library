@@ -13,13 +13,13 @@ use Koselig\Models\User;
 class Wordpress
 {
     /**
-     * Get the current page id.
+     * Get the page id.
      *
      * @return int
      */
     public static function id()
     {
-        return get_the_ID();
+        return app('query')->post->ID;
     }
 
     /**

@@ -4,7 +4,6 @@ namespace Koselig\Providers;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use Koselig\Proxy\Query;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
@@ -38,10 +37,6 @@ class WordpressServiceProvider extends ServiceProvider
 
         // Set up the WordPress query.
         wp();
-
-        $this->app->singleton('query', function () {
-            return Query::instance($GLOBALS['wp_the_query']);
-        });
     }
 
     /**

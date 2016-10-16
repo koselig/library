@@ -137,6 +137,16 @@ class Post extends Model
     }
 
     /**
+     * Get the filtered title.
+     *
+     * @return string
+     */
+    public function title()
+    {
+        return Action::filter('the_title', $this->post_title, $this->ID);
+    }
+
+    /**
      * Get the categories of this post.
      *
      * @see get_the_category
@@ -189,7 +199,6 @@ class Post extends Model
      */
     public function excerpt()
     {
-        dd($this);
         return Action::filter('get_the_excerpt', $this->post_excerpt);
     }
 
@@ -235,5 +244,17 @@ class Post extends Model
     public function toWordpressPost()
     {
         return new WP_Post((object) $this->toArray());
+    }
+
+    /**
+     * Get the current instance of this class. Useful when you would like to get a property when behind
+     * the Loop facade.
+     *
+     *
+     * @return $this
+     */
+    public function get()
+    {
+        return $this;
     }
 }

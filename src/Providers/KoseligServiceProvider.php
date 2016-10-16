@@ -23,6 +23,7 @@ class KoseligServiceProvider extends ServiceProvider
         // Generic service providers
         $this->app->register(WordpressServiceProvider::class);
         $this->app->register(ConfigServiceProvider::class);
+        $this->app->register(QueryServiceProvider::class);
 
         // Blade service provider
         $this->app->register(WordpressTemplatingServiceProvider::class);
