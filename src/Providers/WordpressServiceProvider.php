@@ -55,6 +55,8 @@ class WordpressServiceProvider extends ServiceProvider
 
         define('WP_DEBUG', $this->app->make('config')->get('app.debug'));
         define('WP_DEBUG_DISPLAY', WP_DEBUG);
+        define('WP_DEFAULT_THEME', 'koselig');
+        define('DISALLOW_FILE_MODS', true);
 
         $this->setDatabaseConstants($table_prefix);
         $this->setAuthenticationConstants();
