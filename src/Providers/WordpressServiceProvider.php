@@ -4,6 +4,7 @@ namespace Koselig\Providers;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Koselig\Mail\WordpressMailServiceProvider;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
