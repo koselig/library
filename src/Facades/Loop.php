@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Facade;
  * Facade for {@link Koselig\Models\Post}. Provides access to the current post in "The Loop"
  *
  * @see \Koselig\Models\Post
+ * @mixin \Koselig\Models\Post
  * @author Jordan Doyle <jordan@doyle.wf>
  */
 class Loop extends Facade

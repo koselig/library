@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Facade;
  * Facade for {@link Koselig\Proxy\Query} proxy. Provides access to the main query.
  *
  * @see \Koselig\Proxy\Query
+ * @mixin \Koselig\Proxy\Query
  * @author Jordan Doyle <jordan@doyle.wf>
  */
 class Query extends Facade
