@@ -19,6 +19,7 @@ class Wordpress
      */
     public static function id()
     {
+        // can't use facades to access properties unfortunately!
         return app('query')->post->ID;
     }
 

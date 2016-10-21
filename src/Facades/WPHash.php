@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Facade;
  * Facade for {@link \Koselig\Hashing\WordpressHasher}.
  *
  * @see \Koselig\Hashing\WordpressHasher
+ * @mixin \Koselig\Hashing\WordpressHasher
  * @author Jordan Doyle <jordan@doyle.wf>
  */
 class WPHash extends Facade
