@@ -11,14 +11,15 @@ use Koselig\Support\Wordpress;
  */
 class TermTaxonomy extends Model
 {
+    public $timestamps = false;
     protected $primaryKey = 'term_taxonomy_id';
     protected $table = DB_PREFIX . 'term_taxonomy';
-    public $timestamps = false;
 
     /**
      * Create a new Eloquent model instance.
      *
      * @param  array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])

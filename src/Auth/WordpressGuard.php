@@ -46,7 +46,7 @@ class WordpressGuard implements StatefulGuard
         // If we've already retrieved the user for the current request we can just
         // return it back immediately. We do not want to fetch the user data on
         // every call to this method because that would be tremendously slow.
-        if (!is_null($this->user)) {
+        if (! is_null($this->user)) {
             return $this->user;
         }
 
@@ -57,6 +57,7 @@ class WordpressGuard implements StatefulGuard
      * Validate a user's credentials.
      *
      * @param  array $credentials
+     *
      * @return bool
      */
     public function validate(array $credentials = [])
@@ -65,7 +66,7 @@ class WordpressGuard implements StatefulGuard
 
         $this->lastAttempted = User::find($user->ID);
 
-        return !($user instanceof WP_Error);
+        return ! ($user instanceof WP_Error);
     }
 
     /**
@@ -74,13 +75,14 @@ class WordpressGuard implements StatefulGuard
      * @param  array $credentials
      * @param  bool $remember
      * @param  bool $login
+     *
      * @return bool
      */
     public function attempt(array $credentials = [], $remember = false, $login = true)
     {
         $validate = $this->validate($credentials);
 
-        if (!$login) {
+        if (! $login) {
             return $validate;
         }
 
@@ -99,6 +101,7 @@ class WordpressGuard implements StatefulGuard
      * Log a user into the application without sessions or cookies.
      *
      * @param  array $credentials
+     *
      * @return bool
      */
     public function once(array $credentials = [])
@@ -117,6 +120,7 @@ class WordpressGuard implements StatefulGuard
      *
      * @param  \Illuminate\Contracts\Auth\Authenticatable $user
      * @param  bool $remember
+     *
      * @return void
      */
     public function login(Authenticatable $user, $remember = false)
@@ -133,13 +137,14 @@ class WordpressGuard implements StatefulGuard
      *
      * @param  mixed $id
      * @param  bool $remember
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|bool
      */
     public function loginUsingId($id, $remember = false)
     {
         $user = User::find($id);
 
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
@@ -154,13 +159,14 @@ class WordpressGuard implements StatefulGuard
      * Log the given user ID into the application without sessions or cookies.
      *
      * @param  mixed $id
+     *
      * @return bool
      */
     public function onceUsingId($id)
     {
         $user = User::find($id);
 
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
@@ -194,6 +200,7 @@ class WordpressGuard implements StatefulGuard
      * Set the current user.
      *
      * @param  \Illuminate\Contracts\Auth\Authenticatable $user
+     *
      * @return $this
      */
     public function setUser(Authenticatable $user)

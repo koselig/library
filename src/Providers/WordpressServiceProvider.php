@@ -4,7 +4,6 @@ namespace Koselig\Providers;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use Koselig\Mail\WordpressMailServiceProvider;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
@@ -41,11 +40,54 @@ class WordpressServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register all of the site's theme support.
+     *
+     * @return void
+     */
+    public function addThemeSupport()
+    {
+        foreach (config('supports') as $key => $value) {
+            if (is_string($key)) {
+                add_theme_support($key, $value);
+            } else {
+                add_theme_support($value);
+            }
+        }
+    }
+
+    /**
+     * Hacky fix to get network admin working, Wordpress is basing the network admin path off of
+     * the default site's main link, which obviously doesn't work when the site and Wordpress are in
+     * separate directories.
+     *
+     * @param $url
+     * @param $path
+     * @param $scheme
+     *
+     * @return string
+     */
+    public function rewriteNetworkUrl($url, $path, $scheme)
+    {
+        if ($scheme === 'relative') {
+            $url = Wordpress::site()->path;
+        } else {
+            $url = set_url_scheme('http://' . Wordpress::site()->domain . Wordpress::site()->path, $scheme);
+        }
+
+        if ($path && is_string($path)) {
+            $url .= str_replace('public/', '', WP_PATH) . ltrim($path, '/');
+        }
+
+        return $url;
+    }
+
+    /**
      * Set up the configuration values that wp-config.php
      * does. Use all the values out of .env instead.
      *
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      * @SuppressWarnings(PHPMD.Superglobals)
+     *
      * @return void
      */
     protected function setConfig()
@@ -71,10 +113,40 @@ class WordpressServiceProvider extends ServiceProvider
 
         $GLOBALS['wp_filter']['after_setup_theme'][10][] = [
             'function' => [$this, 'addThemeSupport'],
-            'accepted_args' => 0
+            'accepted_args' => 0,
         ];
 
         require ABSPATH . 'wp-settings.php';
+    }
+
+    /**
+     * Wordpress core hooks needed for the main functionality of
+     * Koselig.
+     *
+     * @return void
+     */
+    protected function triggerHooks()
+    {
+        // register the user's templates
+        Action::hook('theme_page_templates', function ($pageTemplates) {
+            return array_merge($pageTemplates, config('templates'));
+        });
+
+        Action::hook('network_site_url', [$this, 'rewriteNetworkUrl'], 10, 3);
+
+        $this->registerPostTypes();
+    }
+
+    /**
+     * Register all the site's custom post types with Wordpress.
+     *
+     * @return void
+     */
+    protected function registerPostTypes()
+    {
+        foreach (config('posttypes') as $key => $value) {
+            register_post_type($key, $value);
+        }
     }
 
     /**
@@ -117,7 +189,7 @@ class WordpressServiceProvider extends ServiceProvider
      */
     private function setLocationConstants()
     {
-        if (!defined('ABSPATH')) {
+        if (! defined('ABSPATH')) {
             define('ABSPATH', $this->app->basePath() . DIRECTORY_SEPARATOR . WP_PATH);
         }
 
@@ -149,76 +221,5 @@ class WordpressServiceProvider extends ServiceProvider
                 define('BLOG_ID_CURRENT_SITE', $this->app->make('config')->get('wordpress.blog_id_current_site'));
             }
         }
-    }
-
-    /**
-     * Wordpress core hooks needed for the main functionality of
-     * Koselig.
-     *
-     * @return void
-     */
-    protected function triggerHooks()
-    {
-        // register the user's templates
-        Action::hook('theme_page_templates', function ($pageTemplates) {
-            return array_merge($pageTemplates, config('templates'));
-        });
-
-        Action::hook('network_site_url', [$this, 'rewriteNetworkUrl'], 10, 3);
-
-        $this->registerPostTypes();
-    }
-
-    /**
-     * Register all the site's custom post types with Wordpress.
-     *
-     * @return void
-     */
-    protected function registerPostTypes()
-    {
-        foreach (config('posttypes') as $key => $value) {
-            register_post_type($key, $value);
-        }
-    }
-
-    /**
-     * Register all of the site's theme support.
-     *
-     * @return void
-     */
-    public function addThemeSupport()
-    {
-        foreach (config('supports') as $key => $value) {
-            if (is_string($key)) {
-                add_theme_support($key, $value);
-            } else {
-                add_theme_support($value);
-            }
-        }
-    }
-
-    /**
-     * Hacky fix to get network admin working, Wordpress is basing the network admin path off of
-     * the default site's main link, which obviously doesn't work when the site and Wordpress are in
-     * separate directories.
-     *
-     * @param $url
-     * @param $path
-     * @param $scheme
-     * @return string
-     */
-    public function rewriteNetworkUrl($url, $path, $scheme)
-    {
-        if ($scheme == 'relative') {
-            $url = Wordpress::site()->path;
-        } else {
-            $url = set_url_scheme('http://' . Wordpress::site()->domain . Wordpress::site()->path, $scheme);
-        }
-
-        if ($path && is_string($path)) {
-            $url .= str_replace('public/', '', WP_PATH) . ltrim($path, '/');
-        }
-
-        return $url;
     }
 }

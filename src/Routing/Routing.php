@@ -11,6 +11,7 @@ class Routing
      *
      * @param  string $slug slug to match
      * @param  callable|array|string|null $action
+     *
      * @return \Illuminate\Routing\Route
      */
     public function template($slug, $action)
@@ -31,6 +32,7 @@ class Routing
      *
      * @param  string $slug slug to match
      * @param  callable|array|string|null $action
+     *
      * @return \Illuminate\Routing\Route
      */
     public function page($slug, $action)
@@ -52,6 +54,7 @@ class Routing
      *
      * @param callable|string|array $postTypes
      * @param callable|array|string|null $action
+     *
      * @return \Illuminate\Routing\Route
      */
     public function archive($postTypes = [], $action = [])
@@ -61,7 +64,7 @@ class Routing
             $postTypes = [];
         }
 
-        if (!is_array($postTypes)) {
+        if (! is_array($postTypes)) {
             $postTypes = [$postTypes];
         }
 
@@ -82,11 +85,12 @@ class Routing
      *
      * @param array|string $types post types to supply with this route
      * @param callable|string $action
+     *
      * @return mixed
      */
     public function singular($types, $action)
     {
-        if (!is_array($types)) {
+        if (! is_array($types)) {
             $types = [$types];
         }
 
@@ -108,6 +112,7 @@ class Routing
      *
      * @param callable|array|int $users authors to handle by this route
      * @param callable|array|string|null $action
+     *
      * @return mixed
      */
     public function author($users, $action = [])
@@ -117,7 +122,7 @@ class Routing
             $users = [];
         }
 
-        if (!is_array($users)) {
+        if (! is_array($users)) {
             $users = [$users];
         }
 
@@ -136,17 +141,18 @@ class Routing
      * Format <pre>$action</pre> in a nice way to pass to the {@link \Illuminate\Routing\RouteCollection}.
      *
      * @param $action
+     *
      * @return array|string
      */
     protected function formatAction($action)
     {
-        if (!($action instanceof $action) && (is_string($action) || (isset($action['uses'])
+        if (! ($action instanceof $action) && (is_string($action) || (isset($action['uses'])
                     && is_string($action['uses'])))) {
             if (is_string($action)) {
                 $action = ['uses' => $action];
             }
 
-            if (!empty(Route::getGroupStack())) {
+            if (! empty(Route::getGroupStack())) {
                 $group = end(Route::getGroupStack());
 
                 $action['uses'] = isset($group['namespace']) && strpos($action['uses'], '\\') !== 0 ?
@@ -156,11 +162,11 @@ class Routing
             $action['controller'] = $action['uses'];
         }
 
-        if (!is_array($action)) {
+        if (! is_array($action)) {
             $action = ['uses' => $action];
         }
 
-        if (!isset($action['method'])) {
+        if (! isset($action['method'])) {
             $action['method'] = ['GET'];
         }
 
@@ -172,6 +178,7 @@ class Routing
      * route.
      *
      * @param $route
+     *
      * @return mixed
      */
     protected function applyStack($route)

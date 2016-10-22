@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Koselig\Support\Action;
 
-if (!function_exists('wp_mail')) {
+if (! function_exists('wp_mail')) {
     /**
      * Override wp_mail to use the Laravel mailer.
      *
@@ -12,6 +13,7 @@ if (!function_exists('wp_mail')) {
      * @param string $message Message contents
      * @param string|array $headers Optional. Additional headers.
      * @param string|array $attachments Optional. Files to attach.
+     *
      * @return bool Whether the email contents were sent successfully.
      */
     function wp_mail($to, $subject, $message, $headers = '', $attachments = [])
@@ -23,13 +25,13 @@ if (!function_exists('wp_mail')) {
         Mail::raw($message, function (Message $message) use ($to, $subject, $headers, $attachments) {
             $message->to($to)->subject($subject);
 
-            if (!is_array($attachments)) {
+            if (! is_array($attachments)) {
                 $attachments = explode("\n", str_replace("\r\n", "\n", $attachments));
             }
 
             $attachments = array_filter($attachments);
 
-            if (!empty($attachments)) {
+            if (! empty($attachments)) {
                 foreach ($attachments as $attachment) {
                     $message->attach($attachment);
                 }

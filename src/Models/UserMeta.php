@@ -3,7 +3,6 @@ namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Koselig\Support\Wordpress;
 
 /**
  * Table containing the metadata about users in the CMS.
@@ -12,9 +11,9 @@ use Koselig\Support\Wordpress;
  */
 class UserMeta extends Model
 {
+    public $timestamps = false;
     protected $table = DB_PREFIX . 'usermeta';
     protected $primaryKey = 'umeta_id';
-    public $timestamps = false;
 
     /**
      * Cache for all meta values.
@@ -29,11 +28,12 @@ class UserMeta extends Model
      * @param int|string|null $user user to get meta for (or name of the meta item to get
      *                              if you want to get the current user's meta)
      * @param string|null $name
+     *
      * @return mixed
      */
     public static function get($user = null, $name = null)
     {
-        if (!ctype_digit((string) $user) && $name === null) {
+        if (! ctype_digit((string) $user) && $name === null) {
             $name = $user;
             $page = null;
         }
@@ -42,7 +42,7 @@ class UserMeta extends Model
             $user = auth()->id();
         }
 
-        if (!isset(self::$cache[$user])) {
+        if (! isset(self::$cache[$user])) {
             // get all the meta values for a post, it's more than likely we're going to
             // need this again query, so we'll just grab all the results and cache them.
             self::$cache[$user] = self::where('user_id', $user)->get();

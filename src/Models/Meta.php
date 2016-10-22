@@ -14,8 +14,6 @@ use Koselig\Support\Wordpress;
  */
 class Meta extends Model
 {
-    protected $primaryKey = 'meta_id';
-    protected $table = DB_PREFIX . 'postmeta';
     public $timestamps = false;
 
     /**
@@ -24,11 +22,14 @@ class Meta extends Model
      * @var array
      */
     public static $cache = [];
+    protected $primaryKey = 'meta_id';
+    protected $table = DB_PREFIX . 'postmeta';
 
     /**
      * Create a new Eloquent model instance.
      *
      * @param  array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -51,6 +52,7 @@ class Meta extends Model
      * @param int|string|null|Post $page page to get meta for (or name of the meta item to get
      *                                   if you want to get the current page's meta)
      * @param string|null $name
+     *
      * @return mixed
      */
     public static function get($page = null, $name = null)
@@ -59,7 +61,7 @@ class Meta extends Model
             $page = $page->ID;
         }
 
-        if (!ctype_digit((string) $page) && $name === null) {
+        if (! ctype_digit((string) $page) && $name === null) {
             $name = $page;
             $page = null;
         }
@@ -68,7 +70,7 @@ class Meta extends Model
             $page = Wordpress::id();
         }
 
-        if (!isset(static::$cache[$page])) {
+        if (! isset(static::$cache[$page])) {
             // get all the meta values for a post, it's more than likely we're going to
             // need this again query, so we'll just grab all the results and cache them.
             static::$cache[$page] = static::where('post_id', $page)->get();
@@ -89,16 +91,19 @@ class Meta extends Model
      * Grab an ACF field from the database.
      *
      * @see Meta::get()
+     *
      * @param int|string|null|Post $page page to get meta for (or name of the meta item to get
      *                                   if you want to get the current page's meta)
      * @param string|null $name
      * @param bool $format whether to format this field or not
+     *
      * @throws UnsatisfiedDependencyException
+     *
      * @return mixed
      */
     public static function acf($page = null, $name = null, $format = true)
     {
-        if (!function_exists('acf_format_value')) {
+        if (! function_exists('acf_format_value')) {
             throw new UnsatisfiedDependencyException('Advanced Custom Fields must be installed to use field');
         }
 
@@ -106,7 +111,7 @@ class Meta extends Model
             $page = $page->ID;
         }
 
-        if (!ctype_digit((string) $page) && $name === null) {
+        if (! ctype_digit((string) $page) && $name === null) {
             $name = $page;
             $page = null;
         }
@@ -123,8 +128,8 @@ class Meta extends Model
 
         $field = static::get($page, '_' . $name);
 
-        if (!acf_is_field_key($field)) {
-            return null;
+        if (! acf_is_field_key($field)) {
+            return;
         }
 
         $field = get_field_object($field, $name, false, false);
