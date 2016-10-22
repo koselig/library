@@ -2,8 +2,10 @@
 namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Koselig\Exceptions\UnsatisfiedDependencyException;
 use Koselig\Support\Action;
@@ -20,6 +22,7 @@ class Post extends Model
     protected $table = DB_PREFIX . 'posts';
     protected $primaryKey = 'ID';
     protected $dates = ['post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt'];
+    protected $prefix = DB_PREFIX;
     public $timestamps = false;
 
     /**
@@ -34,7 +37,8 @@ class Post extends Model
 
         // Set the current table to the site's own table if we're in a multisite
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
-            $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_posts');
+            $this->prefix = DB_PREFIX . Wordpress::getSiteId() . '_';
+            $this->setTable($this->prefix . 'posts');
         }
     }
 
@@ -181,20 +185,41 @@ class Post extends Model
      *
      * @return string
      */
-    public function title()
+    public function getTitleAttribute()
     {
         return Action::filter('the_title', $this->post_title, $this->ID);
     }
 
     /**
+     * Get the excerpt of this post.
+     *
+     * @return string
+     */
+    public function getExcerptAttribute()
+    {
+        return Action::filter('get_the_excerpt', $this->post_excerpt);
+    }
+
+    /**
+     * Get the filtered content of this post.
+     *
+     * @return string
+     */
+    public function getContentAttribute()
+    {
+        return str_replace(']]>', ']]&gt;', Action::filter('the_content', $this->post_content));
+    }
+
+    /**
      * Get the categories of this post.
      *
-     * @see get_the_category
-     * @return array
+     * @return Term[]|Collection
      */
-    public function category()
+    public function getCategoriesAttribute()
     {
-        return get_the_category($this->ID);
+        return $this->terms()->whereHas('taxonomy', function ($query) {
+            $query->where('taxonomy', 'category');
+        })->get();
     }
 
     /**
@@ -203,7 +228,7 @@ class Post extends Model
      * @see get_permalink
      * @return false|string
      */
-    public function link()
+    public function getLinkAttribute()
     {
         return get_permalink($this->toWordpressPost());
     }
@@ -211,12 +236,24 @@ class Post extends Model
     /**
      * Get the tags of this post.
      *
-     * @see get_the_tags
-     * @return array|false|\WP_Error
+     * @return Term[]|Collection
      */
-    public function tags()
+    public function getTagsAttribute()
     {
-        return get_the_tags($this->ID);
+        return $this->terms()->whereHas('taxonomy', function ($query) {
+            $query->where('taxonomy', 'post_tag');
+        })->get();
+    }
+
+    /**
+     * Get the thumbnail of this post
+     *
+     * @see get_the_post_thumbnail
+     * @return string
+     */
+    public function getThumbnailAttribute()
+    {
+        return $this->thumbnail();
     }
 
     /**
@@ -224,34 +261,21 @@ class Post extends Model
      *
      * @see get_the_post_thumbnail
      * @param string $size
-     * @param string $attr
      * @return string
      */
-    public function thumbnail($size = 'post-thumbnail', $attr = '')
+    public function thumbnail($size = 'post-thumbnail')
     {
-        return get_the_post_thumbnail($this->toWordpressPost(), $size, $attr);
-    }
-
-    /**
-     * Get the excerpt of this post.
-     *
-     * @return string
-     */
-    public function excerpt()
-    {
-        return Action::filter('get_the_excerpt', $this->post_excerpt);
+        return get_the_post_thumbnail_url($this->toWordpressPost(), $size);
     }
 
     /**
      * Get the all the terms of this post.
      *
-     * @see get_the_terms
-     * @param $taxonomy
-     * @return array|false|\WP_Error
+     * @return BelongsToMany
      */
-    public function terms($taxonomy)
+    public function terms()
     {
-        return get_the_terms($this->toWordpressPost(), $taxonomy);
+        return $this->belongsToMany(Term::class, $this->prefix . 'term_relationships', 'object_id', 'term_taxonomy_id');
     }
 
     /**
@@ -270,7 +294,7 @@ class Post extends Model
      * @see get_post_class
      * @return string
      */
-    public function classes()
+    public function getClassesAttribute()
     {
         return implode(' ', get_post_class('', $this->toWordpressPost()));
     }
@@ -284,17 +308,5 @@ class Post extends Model
     public function toWordpressPost()
     {
         return new WP_Post((object) $this->toArray());
-    }
-
-    /**
-     * Get the current instance of this class. Useful when you would like to get a property when behind
-     * the Loop facade.
-     *
-     *
-     * @return $this
-     */
-    public function get()
-    {
-        return $this;
     }
 }

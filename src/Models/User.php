@@ -22,6 +22,22 @@ class User extends Model implements AuthenticatableContract
     public $timestamps = false;
 
     /**
+     * Create a new Eloquent model instance.
+     *
+     * @param  array $attributes
+     * @return void
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // Set the current table to the site's own table if we're in a multisite
+        if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
+            $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_users');
+        }
+    }
+
+    /**
      * Get all the posts that belong to this user.
      *
      * @return HasMany
