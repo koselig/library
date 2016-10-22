@@ -3,6 +3,7 @@ namespace Koselig\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
 /**
@@ -18,6 +19,7 @@ use Koselig\Support\Wordpress;
  * @property Carbon $comment_date_gmt Date this comment was posted
  * @property string $comment_content Content of this comment
  * @property integer $comment_karma Karma of this comment
+ * @property string $content Content of the comment filtered through "comment_text"
  * @property boolean $comment_approved Whether or not this comment has been approved
  * @property string $comment_agent
  * @property string $comment_type
@@ -59,6 +61,16 @@ class Comment extends Model
     public function post()
     {
         return $this->belongsTo(Post::class, 'comment_post_ID');
+    }
+
+    /**
+     * Comment filtered through the "comment_text" filters.
+     *
+     * @return string
+     */
+    public function getContentAttribute()
+    {
+        return Action::filter('comment_text', $this->comment_content);
     }
 
     /**

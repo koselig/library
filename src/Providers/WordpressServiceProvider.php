@@ -69,6 +69,11 @@ class WordpressServiceProvider extends ServiceProvider
             $_SERVER['HTTP_HOST'] = parse_url(config('app.url'))['host'];
         }
 
+        $GLOBALS['wp_filter']['after_setup_theme'][10][] = [
+            'function' => [$this, 'addThemeSupport'],
+            'accepted_args' => 0
+        ];
+
         require ABSPATH . 'wp-settings.php';
     }
 
@@ -128,7 +133,7 @@ class WordpressServiceProvider extends ServiceProvider
      */
     private function setMultisiteConstants()
     {
-        $multisite = $this->app->make('config')->get('wordpress.wp_allow_multisite');
+        $multisite = config('wordpress.wp_allow_multisite');
 
         if ($multisite) {
             define('WP_ALLOW_MULTISITE', $multisite);
@@ -159,28 +164,13 @@ class WordpressServiceProvider extends ServiceProvider
             return array_merge($pageTemplates, config('templates'));
         });
 
-        // hacky fix to get network admin working, wordpress is basing the network admin path off of
-        // the default site's main link, which obviously doesn't work when the site and wordpress are in
-        // separate directories.
-        Action::hook('network_site_url', function ($url, $path, $scheme) {
-            if ($scheme == 'relative') {
-                $url = Wordpress::site()->path;
-            } else {
-                $url = set_url_scheme('http://' . Wordpress::site()->domain . Wordpress::site()->path, $scheme);
-            }
-
-            if ($path && is_string($path)) {
-                $url .= str_replace('public/', '', WP_PATH) . ltrim($path, '/');
-            }
-
-            return $url;
-        }, 10, 3);
+        Action::hook('network_site_url', [$this, 'rewriteNetworkUrl'], 10, 3);
 
         $this->registerPostTypes();
     }
 
     /**
-     * Register all the user's custom post types with Wordpress.
+     * Register all the site's custom post types with Wordpress.
      *
      * @return void
      */
@@ -189,5 +179,46 @@ class WordpressServiceProvider extends ServiceProvider
         foreach (config('posttypes') as $key => $value) {
             register_post_type($key, $value);
         }
+    }
+
+    /**
+     * Register all of the site's theme support.
+     *
+     * @return void
+     */
+    public function addThemeSupport()
+    {
+        foreach (config('supports') as $key => $value) {
+            if (is_string($key)) {
+                add_theme_support($key, $value);
+            } else {
+                add_theme_support($value);
+            }
+        }
+    }
+
+    /**
+     * Hacky fix to get network admin working, Wordpress is basing the network admin path off of
+     * the default site's main link, which obviously doesn't work when the site and Wordpress are in
+     * separate directories.
+     *
+     * @param $url
+     * @param $path
+     * @param $scheme
+     * @return string
+     */
+    public function rewriteNetworkUrl($url, $path, $scheme)
+    {
+        if ($scheme == 'relative') {
+            $url = Wordpress::site()->path;
+        } else {
+            $url = set_url_scheme('http://' . Wordpress::site()->domain . Wordpress::site()->path, $scheme);
+        }
+
+        if ($path && is_string($path)) {
+            $url .= str_replace('public/', '', WP_PATH) . ltrim($path, '/');
+        }
+
+        return $url;
     }
 }
