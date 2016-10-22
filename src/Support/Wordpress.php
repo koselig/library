@@ -27,6 +27,7 @@ class Wordpress
      * Check if the current page is a singular item (eg. a news post).
      *
      * @param array|string $types
+     *
      * @return bool
      */
     public static function singular($types = '')
@@ -38,6 +39,7 @@ class Wordpress
      * Check if the current page is an archive page.
      *
      * @param string|array|null $types check if the archive page is for this type
+     *
      * @return bool
      */
     public static function archive($types = null)
@@ -49,6 +51,7 @@ class Wordpress
      * Check if the current page is an author page.
      *
      * @param int|array|User $users
+     *
      * @return bool
      */
     public static function author($users = [])
@@ -71,6 +74,7 @@ class Wordpress
      *
      * @param null|int|array $id id (or ids) to check against the site, or null if you want to just check
      *                           if we are actually on a multisite
+     *
      * @return bool
      */
     public static function multisite($id = null)
@@ -114,6 +118,7 @@ class Wordpress
      * Use of WP_User is deprecated, however this method will not be removed.
      *
      * @deprecated use <code>auth()->user()</code> instead.
+     *
      * @return \WP_User
      */
     public static function currentUser()

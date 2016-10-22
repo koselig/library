@@ -16,7 +16,7 @@ class ConfigServiceProvider extends ServiceProvider
             realpath(__DIR__ . '/../../config/templates.php') => config_path('templates.php'),
             realpath(__DIR__ . '/../../config/wordpress.php') => config_path('wordpress.php'),
             realpath(__DIR__ . '/../../config/posttypes.php') => config_path('posttypes.php'),
-            realpath(__DIR__ . '/../../config/supports.php') => config_path('supports.php')
+            realpath(__DIR__ . '/../../config/supports.php') => config_path('supports.php'),
         ]);
     }
 }
