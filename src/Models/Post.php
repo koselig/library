@@ -19,16 +19,17 @@ use WP_Post;
  */
 class Post extends Model
 {
+    public $timestamps = false;
     protected $table = DB_PREFIX . 'posts';
     protected $primaryKey = 'ID';
     protected $dates = ['post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt'];
     protected $prefix = DB_PREFIX;
-    public $timestamps = false;
 
     /**
      * Create a new Eloquent model instance.
      *
      * @param  array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -43,24 +44,11 @@ class Post extends Model
     }
 
     /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('post_status', 'publish');
-        });
-    }
-
-    /**
      * Get all the posts within a certain post type.
      *
      * @param Builder $query query to add the scope to
      * @param string $name name of the post type
+     *
      * @return Builder
      */
     public function scopePostType($query, $name)
@@ -72,6 +60,7 @@ class Post extends Model
      * Get a post by its slug.
      *
      * @param $slug
+     *
      * @return static
      */
     public static function findBySlug($slug)
@@ -103,6 +92,7 @@ class Post extends Model
      * Get meta values for this Post.
      *
      * @param array|string|null $key
+     *
      * @return mixed
      */
     public function getMeta($key = null)
@@ -127,6 +117,7 @@ class Post extends Model
      *
      * @param array|string|null $key key (or keys) to get or null for all.
      * @param bool $format whether to format this field or not
+     *
      * @return array array of ACF values.
      */
     public function getACF($key = null, $format = true)
@@ -144,8 +135,7 @@ class Post extends Model
             $wantsArray = true;
         }
 
-        foreach ($meta as $k => $value)
-        {
+        foreach ($meta as $k => $value) {
             $field = $this->getMeta('_' . $k);
 
             if (!acf_is_field_key($field)) {
@@ -160,7 +150,7 @@ class Post extends Model
             $field = get_field_object($field, $k, false, false);
 
             // unset subfields if the user didn't ask for it specifically
-            if (((is_array($key) && !in_array($k, $key)) && $k !== $key || $key === null) && acf_is_sub_field($field)) {
+            if (((is_array($key) && !in_array($k, $key, true)) && $k !== $key || $key === null) && acf_is_sub_field($field)) {
                 unset($meta[$k]);
                 continue;
             }
@@ -226,6 +216,7 @@ class Post extends Model
      * Get the permalink for this post.
      *
      * @see get_permalink
+     *
      * @return false|string
      */
     public function getLinkAttribute()
@@ -246,9 +237,10 @@ class Post extends Model
     }
 
     /**
-     * Get the thumbnail of this post
+     * Get the thumbnail of this post.
      *
      * @see get_the_post_thumbnail
+     *
      * @return string
      */
     public function getThumbnailAttribute()
@@ -257,10 +249,12 @@ class Post extends Model
     }
 
     /**
-     * Get the thumbnail of this post
+     * Get the thumbnail of this post.
      *
      * @see get_the_post_thumbnail
+     *
      * @param string $size
+     *
      * @return string
      */
     public function thumbnail($size = 'post-thumbnail')
@@ -292,6 +286,7 @@ class Post extends Model
      * Get the classes that should be applied to this post.
      *
      * @see get_post_class
+     *
      * @return string
      */
     public function getClassesAttribute()
@@ -303,10 +298,25 @@ class Post extends Model
      * Get the {@link WP_Post} instance for this Post.
      *
      * @deprecated
+     *
      * @return WP_Post
      */
     public function toWordpressPost()
     {
         return new WP_Post((object) $this->toArray());
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('post_status', 'publish');
+        });
     }
 }

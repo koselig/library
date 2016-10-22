@@ -30,6 +30,7 @@ class QueryServiceProvider extends ServiceProvider
         $this->app->bind('loop', function () {
             // current post in "The Loop"
             $post = $GLOBALS['post']->ID;
+
             return $this->cached[$post] ?? $this->cached[$post] = Post::find($GLOBALS['post']->ID);
         });
     }

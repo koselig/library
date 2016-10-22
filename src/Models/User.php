@@ -15,16 +15,17 @@ use Koselig\Support\Wordpress;
 class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
+    public $timestamps = false;
 
     protected $table = DB_PREFIX . 'users';
     protected $primaryKey = 'ID';
     protected $dates = ['user_registered'];
-    public $timestamps = false;
 
     /**
      * Create a new Eloquent model instance.
      *
      * @param  array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
