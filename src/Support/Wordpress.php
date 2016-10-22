@@ -20,7 +20,7 @@ class Wordpress
     public static function id()
     {
         // can't use facades to access properties unfortunately!
-        return app('query')->post->ID;
+        return app('query')->post->ID ?? null;
     }
 
     /**
@@ -108,12 +108,12 @@ class Wordpress
 
     /**
      * Get the current logged in user. Generally, you shouldn't be using this
-     * function and should instead be using Auth::user() from Laravel to get
+     * function and should instead be using <code>auth()->user()</code> from Laravel to get
      * the current logged in Wordpress user.
      *
      * Use of WP_User is deprecated, however this method will not be removed.
      *
-     * @deprecated use <code>Auth::user()</code> instead.
+     * @deprecated use <code>auth()->user()</code> instead.
      * @return \WP_User
      */
     public static function currentUser()

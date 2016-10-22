@@ -34,5 +34,11 @@ class WordpressTemplatingServiceProvider extends ServiceProvider
         Blade::directive('wpfooter', function ($expression) {
             return '<?php wp_footer(); ?>';
         });
+
+        if (function_exists('gravity_form')) {
+            Blade::directive('gravityform', function ($expression) {
+                return "<?php gravity_form({$expression}); ?>";
+            });
+        }
     }
 }
