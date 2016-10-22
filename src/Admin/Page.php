@@ -22,6 +22,7 @@ class Page
      * @param mixed $action The function to be called to output the content for this page.
      * @param string $iconUrl The URL to the icon to be used for this menu.
      * @param int $position The position in the menu order this one should appear.
+     *
      * @return string The resulting page's hook_suffix.
      */
     public static function addPage($pageTitle, $menuTitle, $capability, $slug, $action, $iconUrl = '', $position = null)
@@ -39,6 +40,7 @@ class Page
      * @param string $capabilities The capability required for this menu to be displayed to the user.
      * @param string $slug The slug name to refer to this menu by (should be unique for this menu).
      * @param mixed $action The function to be called to output the content for this page.
+     *
      * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required
      */
     public static function addSubpage($parent, $pageTitle, $menuTitle, $capabilities, $slug, $action)
@@ -51,6 +53,7 @@ class Page
      * syntax.
      *
      * @param $callback
+     *
      * @return Closure
      */
     protected static function wrap($callback)

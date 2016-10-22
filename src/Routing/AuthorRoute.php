@@ -29,6 +29,7 @@ class AuthorRoute extends Route
      * @param  array|string $methods
      * @param  array $users
      * @param  \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $users, $action)
@@ -37,6 +38,23 @@ class AuthorRoute extends Route
 
         $this->users = $this->uri;
         $this->uri = 'author/' . (implode('/', $this->users) ?: 'all');
+    }
+
+    /**
+     * Determine if the route matches given request.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  bool $includingMethod
+     *
+     * @return bool
+     */
+    public function matches(Request $request, $includingMethod = true)
+    {
+        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
+            return false;
+        }
+
+        return Wordpress::author($this->users);
     }
 
     /**
@@ -61,21 +79,5 @@ class AuthorRoute extends Route
         }
 
         return parent::runCallable();
-    }
-
-    /**
-     * Determine if the route matches given request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  bool $includingMethod
-     * @return bool
-     */
-    public function matches(Request $request, $includingMethod = true)
-    {
-        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
-            return false;
-        }
-
-        return Wordpress::author($this->users);
     }
 }

@@ -21,6 +21,7 @@ class TemplateRoute extends Route
      * @param  array|string $methods
      * @param  array $types
      * @param  \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $types, $action)
@@ -28,6 +29,32 @@ class TemplateRoute extends Route
         parent::__construct($methods, $types, $action);
 
         $this->uri = 'template/' . parent::uri();
+    }
+
+    /**
+     * Determine if the route matches given request.
+     *
+     * @param  Request $request
+     * @param  bool $includingMethod
+     *
+     * @return bool
+     */
+    public function matches(Request $request, $includingMethod = true)
+    {
+        $post = $request->post();
+
+        if (!$post) {
+            // the page we are on either isn't in the CMS or doesn't have a template.
+            return false;
+        }
+
+        $slug = $post->getMeta('_wp_page_template');
+
+        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
+            return false;
+        }
+
+        return $this->uri === $slug;
     }
 
     /**
@@ -52,30 +79,5 @@ class TemplateRoute extends Route
         }
 
         return parent::runCallable();
-    }
-
-    /**
-     * Determine if the route matches given request.
-     *
-     * @param  Request $request
-     * @param  bool $includingMethod
-     * @return bool
-     */
-    public function matches(Request $request, $includingMethod = true)
-    {
-        $post = $request->post();
-
-        if (!$post) {
-            // the page we are on either isn't in the CMS or doesn't have a template.
-            return false;
-        }
-
-        $slug = $post->getMeta('_wp_page_template');
-
-        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
-            return false;
-        }
-
-        return $this->uri === $slug;
     }
 }

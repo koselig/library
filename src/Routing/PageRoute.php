@@ -21,12 +21,37 @@ class PageRoute extends Route
      * @param  array|string $methods
      * @param  array $users
      * @param  \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $users, $action)
     {
         parent::__construct($methods, $users, $action);
         $this->uri = 'page/' . $this->uri();
+    }
+
+    /**
+     * Determine if the route matches given request.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  bool $includingMethod
+     *
+     * @return bool
+     */
+    public function matches(Request $request, $includingMethod = true)
+    {
+        $id = Wordpress::id();
+
+        if (!$id) {
+            // we're not on a Wordpress page
+            return false;
+        }
+
+        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
+            return false;
+        }
+
+        return $this->uri === $id;
     }
 
     /**
@@ -51,28 +76,5 @@ class PageRoute extends Route
         }
 
         return parent::runCallable();
-    }
-
-    /**
-     * Determine if the route matches given request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  bool $includingMethod
-     * @return bool
-     */
-    public function matches(Request $request, $includingMethod = true)
-    {
-        $id = Wordpress::id();
-
-        if (!$id) {
-            // we're not on a Wordpress page
-            return false;
-        }
-
-        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
-            return false;
-        }
-
-        return $this->uri === $id;
     }
 }
