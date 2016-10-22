@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Routing;
 
 use Illuminate\Http\Request;
@@ -18,15 +19,16 @@ class PageRoute extends Route
     /**
      * Create a new Route instance.
      *
-     * @param  array|string $methods
-     * @param  array $users
-     * @param  \Closure|array $action
+     * @param array|string   $methods
+     * @param array          $users
+     * @param \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $users, $action)
     {
         parent::__construct($methods, $users, $action);
-        $this->uri = 'page/' . $this->uri();
+        $this->uri = 'page/'.$this->uri();
     }
 
     /**
@@ -56,8 +58,9 @@ class PageRoute extends Route
     /**
      * Determine if the route matches given request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  bool $includingMethod
+     * @param \Illuminate\Http\Request $request
+     * @param bool                     $includingMethod
+     *
      * @return bool
      */
     public function matches(Request $request, $includingMethod = true)

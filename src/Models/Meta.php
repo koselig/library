@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ use Koselig\Support\Wordpress;
 class Meta extends Model
 {
     protected $primaryKey = 'meta_id';
-    protected $table = DB_PREFIX . 'postmeta';
+    protected $table = DB_PREFIX.'postmeta';
     public $timestamps = false;
 
     /**
@@ -28,7 +29,8 @@ class Meta extends Model
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array $attributes
+     * @param array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -37,7 +39,7 @@ class Meta extends Model
 
         // Set the current table to the site's own table if we're in a multisite
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
-            $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_postmeta');
+            $this->setTable(DB_PREFIX.Wordpress::getSiteId().'_postmeta');
         }
     }
 
@@ -50,7 +52,8 @@ class Meta extends Model
      *
      * @param int|string|null|Post $page page to get meta for (or name of the meta item to get
      *                                   if you want to get the current page's meta)
-     * @param string|null $name
+     * @param string|null          $name
+     *
      * @return mixed
      */
     public static function get($page = null, $name = null)
@@ -89,11 +92,14 @@ class Meta extends Model
      * Grab an ACF field from the database.
      *
      * @see Meta::get()
-     * @param int|string|null|Post $page page to get meta for (or name of the meta item to get
-     *                                   if you want to get the current page's meta)
-     * @param string|null $name
-     * @param bool $format whether to format this field or not
+     *
+     * @param int|string|null|Post $page   page to get meta for (or name of the meta item to get
+     *                                     if you want to get the current page's meta)
+     * @param string|null          $name
+     * @param bool                 $format whether to format this field or not
+     *
      * @throws UnsatisfiedDependencyException
+     *
      * @return mixed
      */
     public static function acf($page = null, $name = null, $format = true)
@@ -121,17 +127,17 @@ class Meta extends Model
             $value = @unserialize($value);
         }
 
-        $field = static::get($page, '_' . $name);
+        $field = static::get($page, '_'.$name);
 
         if (!acf_is_field_key($field)) {
-            return null;
+            return;
         }
 
         $field = get_field_object($field, $name, false, false);
         $value = Action::filter('acf/load_value', $value, $page, $field);
-        $value = Action::filter('acf/load_value/type=' . $field['type'], $value, $page, $field);
-        $value = Action::filter('acf/load_value/name=' . $field['_name'], $value, $page, $field);
-        $value = Action::filter('acf/load_value/key=' . $field['key'], $value, $page, $field);
+        $value = Action::filter('acf/load_value/type='.$field['type'], $value, $page, $field);
+        $value = Action::filter('acf/load_value/name='.$field['_name'], $value, $page, $field);
+        $value = Action::filter('acf/load_value/key='.$field['key'], $value, $page, $field);
 
         if ($format) {
             $value = acf_format_value($value, $page, $field);

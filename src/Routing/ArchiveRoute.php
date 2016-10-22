@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Routing;
 
 use Illuminate\Http\Request;
@@ -23,9 +24,10 @@ class ArchiveRoute extends Route
     /**
      * Create a new Route instance.
      *
-     * @param  array|string $methods
-     * @param  array $postTypes
-     * @param  \Closure|array $action
+     * @param array|string   $methods
+     * @param array          $postTypes
+     * @param \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $postTypes, $action)
@@ -33,14 +35,15 @@ class ArchiveRoute extends Route
         parent::__construct($methods, $postTypes, $action);
 
         $this->postTypes = $this->uri;
-        $this->uri = 'archive/' . (implode('/', $this->postTypes) ?: 'all');
+        $this->uri = 'archive/'.(implode('/', $this->postTypes) ?: 'all');
     }
 
     /**
      * Determine if the route matches given request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  bool $includingMethod
+     * @param \Illuminate\Http\Request $request
+     * @param bool                     $includingMethod
+     *
      * @return bool
      */
     public function matches(Request $request, $includingMethod = true)

@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Admin;
 
 use Closure;
@@ -15,13 +16,14 @@ class Page
      * Add a top-level menu page. Action takes the same parameters as any Route method, for example a string in the format
      * method@class or a callback. Dependencies are automatically injected by this function.
      *
-     * @param string $pageTitle The text to be displayed in the title tags of the page when the menu is selected.
-     * @param string $menuTitle The text to be used for the menu.
+     * @param string $pageTitle  The text to be displayed in the title tags of the page when the menu is selected.
+     * @param string $menuTitle  The text to be used for the menu.
      * @param string $capability The capability required for this menu to be displayed to the user.
-     * @param string $slug The slug name to refer to this menu by (should be unique for this menu).
-     * @param mixed $action The function to be called to output the content for this page.
-     * @param string $iconUrl The URL to the icon to be used for this menu.
-     * @param int $position The position in the menu order this one should appear.
+     * @param string $slug       The slug name to refer to this menu by (should be unique for this menu).
+     * @param mixed  $action     The function to be called to output the content for this page.
+     * @param string $iconUrl    The URL to the icon to be used for this menu.
+     * @param int    $position   The position in the menu order this one should appear.
+     *
      * @return string The resulting page's hook_suffix.
      */
     public static function addPage($pageTitle, $menuTitle, $capability, $slug, $action, $iconUrl = '', $position = null)
@@ -33,12 +35,13 @@ class Page
      * Add a submenu page. Action takes the same parameters as any Route method, for example a string in the format
      * method@class or a callback. Dependencies are automatically injected by this function.
      *
-     * @param string $parent The slug name for the parent menu (or the file name of a standard WordPress admin page).
-     * @param string $pageTitle The text to be displayed in the title tags of the page when the menu is selected.
-     * @param string $menuTitle The text to be used for the menu.
+     * @param string $parent       The slug name for the parent menu (or the file name of a standard WordPress admin page).
+     * @param string $pageTitle    The text to be displayed in the title tags of the page when the menu is selected.
+     * @param string $menuTitle    The text to be used for the menu.
      * @param string $capabilities The capability required for this menu to be displayed to the user.
-     * @param string $slug The slug name to refer to this menu by (should be unique for this menu).
-     * @param mixed $action The function to be called to output the content for this page.
+     * @param string $slug         The slug name to refer to this menu by (should be unique for this menu).
+     * @param mixed  $action       The function to be called to output the content for this page.
+     *
      * @return false|string The resulting page's hook_suffix, or false if the user does not have the capability required
      */
     public static function addSubpage($parent, $pageTitle, $menuTitle, $capabilities, $slug, $action)
@@ -51,6 +54,7 @@ class Page
      * syntax.
      *
      * @param $callback
+     *
      * @return Closure
      */
     protected static function wrap($callback)

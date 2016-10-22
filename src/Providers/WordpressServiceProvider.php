@@ -1,10 +1,10 @@
 <?php
+
 namespace Koselig\Providers;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use Koselig\Mail\WordpressMailServiceProvider;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
@@ -28,9 +28,9 @@ class WordpressServiceProvider extends ServiceProvider
         define(
             'WP_PATH',
             json_decode(
-                file_get_contents($this->app->basePath() . DIRECTORY_SEPARATOR . 'composer.json'),
+                file_get_contents($this->app->basePath().DIRECTORY_SEPARATOR.'composer.json'),
                 true
-            )['extra']['wordpress-install-dir'] . '/'
+            )['extra']['wordpress-install-dir'].'/'
         );
 
         $this->setConfig();
@@ -46,6 +46,7 @@ class WordpressServiceProvider extends ServiceProvider
      *
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      * @SuppressWarnings(PHPMD.Superglobals)
+     *
      * @return void
      */
     protected function setConfig()
@@ -70,11 +71,11 @@ class WordpressServiceProvider extends ServiceProvider
         }
 
         $GLOBALS['wp_filter']['after_setup_theme'][10][] = [
-            'function' => [$this, 'addThemeSupport'],
-            'accepted_args' => 0
+            'function'      => [$this, 'addThemeSupport'],
+            'accepted_args' => 0,
         ];
 
-        require ABSPATH . 'wp-settings.php';
+        require ABSPATH.'wp-settings.php';
     }
 
     /**
@@ -118,13 +119,13 @@ class WordpressServiceProvider extends ServiceProvider
     private function setLocationConstants()
     {
         if (!defined('ABSPATH')) {
-            define('ABSPATH', $this->app->basePath() . DIRECTORY_SEPARATOR . WP_PATH);
+            define('ABSPATH', $this->app->basePath().DIRECTORY_SEPARATOR.WP_PATH);
         }
 
         define('WP_SITEURL', $this->app->make(UrlGenerator::class)->to(str_replace('public/', '', WP_PATH)));
         define('WP_HOME', $this->app->make(UrlGenerator::class)->to('/'));
 
-        define('WP_CONTENT_DIR', $this->app->basePath() . DIRECTORY_SEPARATOR . 'public/content');
+        define('WP_CONTENT_DIR', $this->app->basePath().DIRECTORY_SEPARATOR.'public/content');
         define('WP_CONTENT_URL', $this->app->make(UrlGenerator::class)->to('content'));
     }
 
@@ -205,6 +206,7 @@ class WordpressServiceProvider extends ServiceProvider
      * @param $url
      * @param $path
      * @param $scheme
+     *
      * @return string
      */
     public function rewriteNetworkUrl($url, $path, $scheme)
@@ -212,11 +214,11 @@ class WordpressServiceProvider extends ServiceProvider
         if ($scheme == 'relative') {
             $url = Wordpress::site()->path;
         } else {
-            $url = set_url_scheme('http://' . Wordpress::site()->domain . Wordpress::site()->path, $scheme);
+            $url = set_url_scheme('http://'.Wordpress::site()->domain.Wordpress::site()->path, $scheme);
         }
 
         if ($path && is_string($path)) {
-            $url .= str_replace('public/', '', WP_PATH) . ltrim($path, '/');
+            $url .= str_replace('public/', '', WP_PATH).ltrim($path, '/');
         }
 
         return $url;

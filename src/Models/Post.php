@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,7 @@ use WP_Post;
  */
 class Post extends Model
 {
-    protected $table = DB_PREFIX . 'posts';
+    protected $table = DB_PREFIX.'posts';
     protected $primaryKey = 'ID';
     protected $dates = ['post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt'];
     protected $prefix = DB_PREFIX;
@@ -28,7 +29,8 @@ class Post extends Model
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array $attributes
+     * @param array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -37,8 +39,8 @@ class Post extends Model
 
         // Set the current table to the site's own table if we're in a multisite
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
-            $this->prefix = DB_PREFIX . Wordpress::getSiteId() . '_';
-            $this->setTable($this->prefix . 'posts');
+            $this->prefix = DB_PREFIX.Wordpress::getSiteId().'_';
+            $this->setTable($this->prefix.'posts');
         }
     }
 
@@ -60,7 +62,8 @@ class Post extends Model
      * Get all the posts within a certain post type.
      *
      * @param Builder $query query to add the scope to
-     * @param string $name name of the post type
+     * @param string  $name  name of the post type
+     *
      * @return Builder
      */
     public function scopePostType($query, $name)
@@ -72,6 +75,7 @@ class Post extends Model
      * Get a post by its slug.
      *
      * @param $slug
+     *
      * @return static
      */
     public static function findBySlug($slug)
@@ -103,6 +107,7 @@ class Post extends Model
      * Get meta values for this Post.
      *
      * @param array|string|null $key
+     *
      * @return mixed
      */
     public function getMeta($key = null)
@@ -125,8 +130,9 @@ class Post extends Model
     /**
      * Get meta values for this Post.
      *
-     * @param array|string|null $key key (or keys) to get or null for all.
-     * @param bool $format whether to format this field or not
+     * @param array|string|null $key    key (or keys) to get or null for all.
+     * @param bool              $format whether to format this field or not
+     *
      * @return array array of ACF values.
      */
     public function getACF($key = null, $format = true)
@@ -144,9 +150,8 @@ class Post extends Model
             $wantsArray = true;
         }
 
-        foreach ($meta as $k => $value)
-        {
-            $field = $this->getMeta('_' . $k);
+        foreach ($meta as $k => $value) {
+            $field = $this->getMeta('_'.$k);
 
             if (!acf_is_field_key($field)) {
                 unset($meta[$k]);
@@ -166,9 +171,9 @@ class Post extends Model
             }
 
             $value = Action::filter('acf/load_value', $value, $k, $field);
-            $value = Action::filter('acf/load_value/type=' . $field['type'], $value, $this->ID, $field);
-            $value = Action::filter('acf/load_value/name=' . $field['_name'], $value, $this->ID, $field);
-            $value = Action::filter('acf/load_value/key=' . $field['key'], $value, $this->ID, $field);
+            $value = Action::filter('acf/load_value/type='.$field['type'], $value, $this->ID, $field);
+            $value = Action::filter('acf/load_value/name='.$field['_name'], $value, $this->ID, $field);
+            $value = Action::filter('acf/load_value/key='.$field['key'], $value, $this->ID, $field);
 
             if ($format) {
                 $value = acf_format_value($value, $this->ID, $field);
@@ -226,6 +231,7 @@ class Post extends Model
      * Get the permalink for this post.
      *
      * @see get_permalink
+     *
      * @return false|string
      */
     public function getLinkAttribute()
@@ -246,9 +252,10 @@ class Post extends Model
     }
 
     /**
-     * Get the thumbnail of this post
+     * Get the thumbnail of this post.
      *
      * @see get_the_post_thumbnail
+     *
      * @return string
      */
     public function getThumbnailAttribute()
@@ -257,10 +264,12 @@ class Post extends Model
     }
 
     /**
-     * Get the thumbnail of this post
+     * Get the thumbnail of this post.
      *
      * @see get_the_post_thumbnail
+     *
      * @param string $size
+     *
      * @return string
      */
     public function thumbnail($size = 'post-thumbnail')
@@ -275,7 +284,7 @@ class Post extends Model
      */
     public function terms()
     {
-        return $this->belongsToMany(Term::class, $this->prefix . 'term_relationships', 'object_id', 'term_taxonomy_id');
+        return $this->belongsToMany(Term::class, $this->prefix.'term_relationships', 'object_id', 'term_taxonomy_id');
     }
 
     /**
@@ -292,6 +301,7 @@ class Post extends Model
      * Get the classes that should be applied to this post.
      *
      * @see get_post_class
+     *
      * @return string
      */
     public function getClassesAttribute()
@@ -303,6 +313,7 @@ class Post extends Model
      * Get the {@link WP_Post} instance for this Post.
      *
      * @deprecated
+     *
      * @return WP_Post
      */
     public function toWordpressPost()

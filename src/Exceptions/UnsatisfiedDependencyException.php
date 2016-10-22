@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Exceptions;
 
 use RuntimeException;

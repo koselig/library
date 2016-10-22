@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Hashing;
 
 use Illuminate\Support\ServiceProvider;

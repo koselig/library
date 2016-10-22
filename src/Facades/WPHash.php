@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Facades;
 
 use Illuminate\Support\Facades\Facade;
@@ -8,6 +9,7 @@ use Illuminate\Support\Facades\Facade;
  *
  * @see \Koselig\Hashing\WordpressHasher
  * @mixin \Koselig\Hashing\WordpressHasher
+ *
  * @author Jordan Doyle <jordan@doyle.wf>
  */
 class WPHash extends Facade

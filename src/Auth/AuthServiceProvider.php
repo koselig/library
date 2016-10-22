@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Auth;
 
 use Illuminate\Support\Facades\Auth;

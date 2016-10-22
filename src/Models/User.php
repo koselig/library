@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Models;
 
 use Illuminate\Auth\Authenticatable;
@@ -16,7 +17,7 @@ class User extends Model implements AuthenticatableContract
 {
     use Authenticatable;
 
-    protected $table = DB_PREFIX . 'users';
+    protected $table = DB_PREFIX.'users';
     protected $primaryKey = 'ID';
     protected $dates = ['user_registered'];
     public $timestamps = false;
@@ -24,7 +25,8 @@ class User extends Model implements AuthenticatableContract
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array $attributes
+     * @param array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -33,7 +35,7 @@ class User extends Model implements AuthenticatableContract
 
         // Set the current table to the site's own table if we're in a multisite
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
-            $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_users');
+            $this->setTable(DB_PREFIX.Wordpress::getSiteId().'_users');
         }
     }
 

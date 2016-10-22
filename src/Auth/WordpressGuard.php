@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Auth;
 
 use Illuminate\Auth\GuardHelpers;
@@ -56,7 +57,8 @@ class WordpressGuard implements StatefulGuard
     /**
      * Validate a user's credentials.
      *
-     * @param  array $credentials
+     * @param array $credentials
+     *
      * @return bool
      */
     public function validate(array $credentials = [])
@@ -71,9 +73,10 @@ class WordpressGuard implements StatefulGuard
     /**
      * Attempt to authenticate a user using the given credentials.
      *
-     * @param  array $credentials
-     * @param  bool $remember
-     * @param  bool $login
+     * @param array $credentials
+     * @param bool  $remember
+     * @param bool  $login
+     *
      * @return bool
      */
     public function attempt(array $credentials = [], $remember = false, $login = true)
@@ -98,7 +101,8 @@ class WordpressGuard implements StatefulGuard
     /**
      * Log a user into the application without sessions or cookies.
      *
-     * @param  array $credentials
+     * @param array $credentials
+     *
      * @return bool
      */
     public function once(array $credentials = [])
@@ -115,8 +119,9 @@ class WordpressGuard implements StatefulGuard
     /**
      * Log a user into the application.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
-     * @param  bool $remember
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     * @param bool                                       $remember
+     *
      * @return void
      */
     public function login(Authenticatable $user, $remember = false)
@@ -131,8 +136,9 @@ class WordpressGuard implements StatefulGuard
     /**
      * Log the given user ID into the application.
      *
-     * @param  mixed $id
-     * @param  bool $remember
+     * @param mixed $id
+     * @param bool  $remember
+     *
      * @return \Illuminate\Contracts\Auth\Authenticatable|bool
      */
     public function loginUsingId($id, $remember = false)
@@ -153,7 +159,8 @@ class WordpressGuard implements StatefulGuard
     /**
      * Log the given user ID into the application without sessions or cookies.
      *
-     * @param  mixed $id
+     * @param mixed $id
+     *
      * @return bool
      */
     public function onceUsingId($id)
@@ -193,7 +200,8 @@ class WordpressGuard implements StatefulGuard
     /**
      * Set the current user.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     *
      * @return $this
      */
     public function setUser(Authenticatable $user)

@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Mail;
 
 use Illuminate\Support\ServiceProvider;

@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Routing;
 
 use Illuminate\Routing\Route;
@@ -18,16 +19,17 @@ class TemplateRoute extends Route
     /**
      * Create a new Route instance.
      *
-     * @param  array|string $methods
-     * @param  array $types
-     * @param  \Closure|array $action
+     * @param array|string   $methods
+     * @param array          $types
+     * @param \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $types, $action)
     {
         parent::__construct($methods, $types, $action);
 
-        $this->uri = 'template/' . parent::uri();
+        $this->uri = 'template/'.parent::uri();
     }
 
     /**
@@ -57,8 +59,9 @@ class TemplateRoute extends Route
     /**
      * Determine if the route matches given request.
      *
-     * @param  Request $request
-     * @param  bool $includingMethod
+     * @param Request $request
+     * @param bool    $includingMethod
+     *
      * @return bool
      */
     public function matches(Request $request, $includingMethod = true)

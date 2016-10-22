@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Routing;
 
 use Illuminate\Routing\Router;
@@ -21,7 +22,7 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->app->alias('request', Request::class);
 
-        $routing = new Routing;
+        $routing = new Routing();
 
         // Router methods
         Router::macro('template', [$routing, 'template']);

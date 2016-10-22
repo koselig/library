@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -13,13 +14,14 @@ use Koselig\Support\Wordpress;
 class Term extends Model
 {
     protected $primaryKey = 'term_id';
-    protected $table = DB_PREFIX . 'terms';
+    protected $table = DB_PREFIX.'terms';
     public $timestamps = false;
 
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array $attributes
+     * @param array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -28,7 +30,7 @@ class Term extends Model
 
         // Set the current table to the site's own table if we're in a multisite
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
-            $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_terms');
+            $this->setTable(DB_PREFIX.Wordpress::getSiteId().'_terms');
         }
     }
 

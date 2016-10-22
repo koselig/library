@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Providers;
 
 use Illuminate\Support\ServiceProvider;
@@ -13,10 +14,10 @@ class ConfigServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            realpath(__DIR__ . '/../../config/templates.php') => config_path('templates.php'),
-            realpath(__DIR__ . '/../../config/wordpress.php') => config_path('wordpress.php'),
-            realpath(__DIR__ . '/../../config/posttypes.php') => config_path('posttypes.php'),
-            realpath(__DIR__ . '/../../config/supports.php') => config_path('supports.php')
+            realpath(__DIR__.'/../../config/templates.php') => config_path('templates.php'),
+            realpath(__DIR__.'/../../config/wordpress.php') => config_path('wordpress.php'),
+            realpath(__DIR__.'/../../config/posttypes.php') => config_path('posttypes.php'),
+            realpath(__DIR__.'/../../config/supports.php')  => config_path('supports.php'),
         ]);
     }
 }

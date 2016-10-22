@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Routing;
 
 use Illuminate\Container\Container;
@@ -9,8 +10,9 @@ class Routing
     /**
      * Register a new template route with the router.
      *
-     * @param  string $slug slug to match
-     * @param  callable|array|string|null $action
+     * @param string                     $slug   slug to match
+     * @param callable|array|string|null $action
+     *
      * @return \Illuminate\Routing\Route
      */
     public function template($slug, $action)
@@ -29,8 +31,9 @@ class Routing
     /**
      * Register a new page route with the router.
      *
-     * @param  string $slug slug to match
-     * @param  callable|array|string|null $action
+     * @param string                     $slug   slug to match
+     * @param callable|array|string|null $action
+     *
      * @return \Illuminate\Routing\Route
      */
     public function page($slug, $action)
@@ -50,8 +53,9 @@ class Routing
      * Register a new archive route with the router. Optionally supply
      * the post types you'd like to supply with this route.
      *
-     * @param callable|string|array $postTypes
+     * @param callable|string|array      $postTypes
      * @param callable|array|string|null $action
+     *
      * @return \Illuminate\Routing\Route
      */
     public function archive($postTypes = [], $action = [])
@@ -80,8 +84,9 @@ class Routing
      * Register a singular route with the router. This allows the user to
      * create pages for a single post type, ie. a news article.
      *
-     * @param array|string $types post types to supply with this route
+     * @param array|string    $types  post types to supply with this route
      * @param callable|string $action
+     *
      * @return mixed
      */
     public function singular($types, $action)
@@ -106,8 +111,9 @@ class Routing
      * create pages for an author or authors. Optionally supply the authors
      * you'd like to supply using this route.
      *
-     * @param callable|array|int $users authors to handle by this route
+     * @param callable|array|int         $users  authors to handle by this route
      * @param callable|array|string|null $action
+     *
      * @return mixed
      */
     public function author($users, $action = [])
@@ -136,6 +142,7 @@ class Routing
      * Format <pre>$action</pre> in a nice way to pass to the {@link \Illuminate\Routing\RouteCollection}.
      *
      * @param $action
+     *
      * @return array|string
      */
     protected function formatAction($action)
@@ -150,7 +157,7 @@ class Routing
                 $group = end(Route::getGroupStack());
 
                 $action['uses'] = isset($group['namespace']) && strpos($action['uses'], '\\') !== 0 ?
-                    $group['namespace'] . '\\' . $action['uses'] : $action['uses'];
+                    $group['namespace'].'\\'.$action['uses'] : $action['uses'];
             }
 
             $action['controller'] = $action['uses'];
@@ -172,6 +179,7 @@ class Routing
      * route.
      *
      * @param $route
+     *
      * @return mixed
      */
     protected function applyStack($route)

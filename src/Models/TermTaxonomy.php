@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -12,13 +13,14 @@ use Koselig\Support\Wordpress;
 class TermTaxonomy extends Model
 {
     protected $primaryKey = 'term_taxonomy_id';
-    protected $table = DB_PREFIX . 'term_taxonomy';
+    protected $table = DB_PREFIX.'term_taxonomy';
     public $timestamps = false;
 
     /**
      * Create a new Eloquent model instance.
      *
-     * @param  array $attributes
+     * @param array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -27,7 +29,7 @@ class TermTaxonomy extends Model
 
         // Set the current table to the site's own table if we're in a multisite
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
-            $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_term_taxonomy');
+            $this->setTable(DB_PREFIX.Wordpress::getSiteId().'_term_taxonomy');
         }
     }
 }

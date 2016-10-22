@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Http;
 
 use Illuminate\Http\Request as BaseRequest;

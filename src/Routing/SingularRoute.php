@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Routing;
 
 use Illuminate\Http\Request;
@@ -25,9 +26,10 @@ class SingularRoute extends Route
     /**
      * Create a new Route instance.
      *
-     * @param  array|string $methods
-     * @param  array $types
-     * @param  \Closure|array $action
+     * @param array|string   $methods
+     * @param array          $types
+     * @param \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $types, $action)
@@ -35,7 +37,7 @@ class SingularRoute extends Route
         parent::__construct($methods, $types, $action);
 
         $this->types = $this->uri;
-        $this->uri = 'singular/' . implode('/', $this->types);
+        $this->uri = 'singular/'.implode('/', $this->types);
     }
 
     /**
@@ -65,8 +67,9 @@ class SingularRoute extends Route
     /**
      * Determine if the route matches given request.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  bool $includingMethod
+     * @param \Illuminate\Http\Request $request
+     * @param bool                     $includingMethod
+     *
      * @return bool
      */
     public function matches(Request $request, $includingMethod = true)

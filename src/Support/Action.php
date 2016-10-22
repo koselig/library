@@ -1,4 +1,5 @@
 <?php
+
 namespace Koselig\Support;
 
 /**
@@ -13,8 +14,8 @@ class Action
      *
      * @param $tag
      * @param string $function
-     * @param int $priority
-     * @param int $acceptedArgs
+     * @param int    $priority
+     * @param int    $acceptedArgs
      */
     public static function hook($tag, $function, $priority = 10, $acceptedArgs = 1)
     {
@@ -26,9 +27,10 @@ class Action
     /**
      * Run all filters hooked to <pre>$tag</pre> on the given <pre>$value</pre>.
      *
-     * @param string $tag tag to run
-     * @param mixed $value value to run filters on
+     * @param string $tag   tag to run
+     * @param mixed  $value value to run filters on
      * @param array ...$params extra params to pass to filters
+     *
      * @return mixed|void
      */
     public static function filter($tag, $value, ...$params)
@@ -39,8 +41,8 @@ class Action
     /**
      * Execute functions hooked on a specific action hook.
      *
-     * @param string $tag name of the action to be executed
-     * @param array $params parameters to pass to the hooked functions
+     * @param string $tag    name of the action to be executed
+     * @param array  $params parameters to pass to the hooked functions
      */
     public static function trigger($tag, ...$params)
     {
