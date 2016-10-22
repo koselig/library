@@ -26,6 +26,7 @@ class ArchiveRoute extends Route
      * @param  array|string $methods
      * @param  array $postTypes
      * @param  \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $postTypes, $action)
@@ -41,6 +42,7 @@ class ArchiveRoute extends Route
      *
      * @param  \Illuminate\Http\Request $request
      * @param  bool $includingMethod
+     *
      * @return bool
      */
     public function matches(Request $request, $includingMethod = true)

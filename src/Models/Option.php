@@ -11,14 +11,15 @@ use Koselig\Support\Wordpress;
  */
 class Option extends Model
 {
+    public $timestamps = false;
     protected $primaryKey = 'option_id';
     protected $table = DB_PREFIX . 'options';
-    public $timestamps = false;
 
     /**
      * Create a new Eloquent model instance.
      *
      * @param  array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -35,6 +36,7 @@ class Option extends Model
      * Get an option by its name.
      *
      * @param $name
+     *
      * @return mixed
      */
     public static function findByName($name)
@@ -46,6 +48,7 @@ class Option extends Model
      * Get the option's value.
      *
      * @param $value
+     *
      * @return mixed
      */
     public function getOptionValueAttribute($value)

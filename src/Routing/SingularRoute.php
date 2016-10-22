@@ -28,6 +28,7 @@ class SingularRoute extends Route
      * @param  array|string $methods
      * @param  array $types
      * @param  \Closure|array $action
+     *
      * @return void
      */
     public function __construct($methods, $types, $action)
@@ -36,6 +37,28 @@ class SingularRoute extends Route
 
         $this->types = $this->uri;
         $this->uri = 'singular/' . implode('/', $this->types);
+    }
+
+    /**
+     * Determine if the route matches given request.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @param  bool $includingMethod
+     *
+     * @return bool
+     */
+    public function matches(Request $request, $includingMethod = true)
+    {
+        if (!Wordpress::id()) {
+            // this isn't a wordpress-controlled page
+            return false;
+        }
+
+        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
+            return false;
+        }
+
+        return Wordpress::singular($this->types);
     }
 
     /**
@@ -60,26 +83,5 @@ class SingularRoute extends Route
         }
 
         return parent::runCallable();
-    }
-
-    /**
-     * Determine if the route matches given request.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  bool $includingMethod
-     * @return bool
-     */
-    public function matches(Request $request, $includingMethod = true)
-    {
-        if (!Wordpress::id()) {
-            // this isn't a wordpress-controlled page
-            return false;
-        }
-
-        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
-            return false;
-        }
-
-        return Wordpress::singular($this->types);
     }
 }
