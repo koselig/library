@@ -3,7 +3,6 @@ namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Koselig\Support\Wordpress;
 
 /**
  * Table containing the metadata about users in the CMS.
@@ -12,9 +11,9 @@ use Koselig\Support\Wordpress;
  */
 class UserMeta extends Model
 {
+    public $timestamps = false;
     protected $table = DB_PREFIX . 'usermeta';
     protected $primaryKey = 'umeta_id';
-    public $timestamps = false;
 
     /**
      * Cache for all meta values.
@@ -29,6 +28,7 @@ class UserMeta extends Model
      * @param int|string|null $user user to get meta for (or name of the meta item to get
      *                              if you want to get the current user's meta)
      * @param string|null $name
+     *
      * @return mixed
      */
     public static function get($user = null, $name = null)

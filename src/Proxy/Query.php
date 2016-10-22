@@ -65,6 +65,7 @@ use WP_Query;
  * @method static mixed lazyloadTermMeta(mixed $check, integer $term_id) Lazyload term meta for posts in the loop.
  * @method static mixed lazyloadCommentMeta(mixed $check, integer $comment_id) Lazyload comment meta for comments in
  *                                                                             the loop.
+ *
  * @author Jordan Doyle <jordan@doyle.wf>
  */
 class Query
@@ -76,17 +77,11 @@ class Query
      */
     private $query;
 
-    public static function instance(WP_Query $query)
-    {
-        $instance = new static;
-        $instance->query = $query;
-        return $instance;
-    }
-
     /**
-     * Get a property from {@link WP_Query}
+     * Get a property from {@link WP_Query}.
      *
      * @param $name
+     *
      * @return mixed
      */
     public function __get($name)
@@ -95,10 +90,11 @@ class Query
     }
 
     /**
-     * Pass a call to this function to {@link WP_Query}
+     * Pass a call to this function to {@link WP_Query}.
      *
      * @param $name
      * @param $arguments
+     *
      * @return mixed
      */
     public function __call($name, $arguments)
@@ -126,5 +122,13 @@ class Query
         }
 
         return $this->query->{$name}(...$arguments);
+    }
+
+    public static function instance(WP_Query $query)
+    {
+        $instance = new static;
+        $instance->query = $query;
+
+        return $instance;
     }
 }
