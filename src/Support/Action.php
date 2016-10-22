@@ -12,13 +12,15 @@ class Action
      * Hook a function or method to a specific filter action.
      *
      * @param $tag
-     * @param callable $function
+     * @param string $function
      * @param int $priority
      * @param int $acceptedArgs
      */
-    public static function hook($tag, callable $function, $priority = 10, $acceptedArgs = 1)
+    public static function hook($tag, $function, $priority = 10, $acceptedArgs = 1)
     {
-        add_filter($tag, $function, $priority, $acceptedArgs);
+        add_filter($tag, function (...$args) use ($function) {
+            return app()->call($function, $args);
+        }, $priority, $acceptedArgs);
     }
 
     /**
