@@ -18,20 +18,20 @@ class WordpressTemplatingServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Blade::directive('loop', function ($expression) {
+        Blade::directive('loop', function () {
             return '<?php if (Koselig\Facades\Query::hasPosts()): while (Koselig\Facades\Query::hasPosts()): '
-                . 'Koselig\Facades\Query::thePost(); $loop = app(\'loop\'); ?>';
+                . 'Koselig\Facades\Query::post(); $loop = app(\'loop\'); ?>';
         });
 
-        Blade::directive('endloop', function ($expression) {
+        Blade::directive('endloop', function () {
             return '<?php endwhile; endif; ?>';
         });
 
-        Blade::directive('wphead', function ($expression) {
+        Blade::directive('wphead', function () {
             return '<?php wp_head(); ?>';
         });
 
-        Blade::directive('wpfooter', function ($expression) {
+        Blade::directive('wpfooter', function () {
             return '<?php wp_footer(); ?>';
         });
 
