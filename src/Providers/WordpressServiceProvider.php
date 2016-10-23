@@ -95,7 +95,7 @@ class WordpressServiceProvider extends ServiceProvider
         // Wordpress requires $table_prefix rather than another constant.
         $table_prefix = 'wp_';
 
-        define('WP_DEBUG', $this->app->make('config')->get('app.debug'));
+        define('WP_DEBUG', config('app.debug'));
         define('WP_DEBUG_DISPLAY', WP_DEBUG);
         define('WP_DEFAULT_THEME', 'koselig');
         define('DISALLOW_FILE_MODS', true);
@@ -172,14 +172,14 @@ class WordpressServiceProvider extends ServiceProvider
      */
     private function setAuthenticationConstants()
     {
-        define('AUTH_KEY', $this->app->make('config')->get('wordpress.auth_key'));
-        define('SECURE_AUTH_KEY', $this->app->make('config')->get('wordpress.secure_auth_key'));
-        define('LOGGED_IN_KEY', $this->app->make('config')->get('wordpress.logged_in_key'));
-        define('NONCE_KEY', $this->app->make('config')->get('wordpress.nonce_key'));
-        define('AUTH_SALT', $this->app->make('config')->get('wordpress.auth_salt'));
-        define('SECURE_AUTH_SALT', $this->app->make('config')->get('wordpress.secure_auth_salt'));
-        define('LOGGED_IN_SALT', $this->app->make('config')->get('wordpress.logged_in_salt'));
-        define('NONCE_SALT', $this->app->make('config')->get('wordpress.nonce_salt'));
+        define('AUTH_KEY', config('wordpress.auth_key'));
+        define('SECURE_AUTH_KEY', config('wordpress.secure_auth_key'));
+        define('LOGGED_IN_KEY', config('wordpress.logged_in_key'));
+        define('NONCE_KEY', config('wordpress.nonce_key'));
+        define('AUTH_SALT', config('wordpress.auth_salt'));
+        define('SECURE_AUTH_SALT', config('wordpress.secure_auth_salt'));
+        define('LOGGED_IN_SALT', config('wordpress.logged_in_salt'));
+        define('NONCE_SALT', config('wordpress.nonce_salt'));
     }
 
     /**
@@ -193,11 +193,11 @@ class WordpressServiceProvider extends ServiceProvider
             define('ABSPATH', $this->app->basePath() . DIRECTORY_SEPARATOR . WP_PATH);
         }
 
-        define('WP_SITEURL', $this->app->make(UrlGenerator::class)->to(str_replace('public/', '', WP_PATH)));
-        define('WP_HOME', $this->app->make(UrlGenerator::class)->to('/'));
+        define('WP_SITEURL', url(str_replace('public/', '', WP_PATH)));
+        define('WP_HOME', url('/'));
 
         define('WP_CONTENT_DIR', $this->app->basePath() . DIRECTORY_SEPARATOR . 'public/content');
-        define('WP_CONTENT_URL', $this->app->make(UrlGenerator::class)->to('content'));
+        define('WP_CONTENT_URL', url('content'));
     }
 
     /**
@@ -210,15 +210,15 @@ class WordpressServiceProvider extends ServiceProvider
         if ($multisite) {
             define('WP_ALLOW_MULTISITE', $multisite);
 
-            $enabled = $this->app->make('config')->get('wordpress.multisite');
+            $enabled = config('wordpress.multisite');
 
             if ($enabled) {
                 define('MULTISITE', $enabled);
-                define('SUBDOMAIN_INSTALL', $this->app->make('config')->get('wordpress.subdomain_install'));
-                define('DOMAIN_CURRENT_SITE', $this->app->make('config')->get('wordpress.domain_current_site'));
-                define('PATH_CURRENT_SITE', $this->app->make('config')->get('wordpress.path_current_site'));
-                define('SITE_ID_CURRENT_SITE', $this->app->make('config')->get('wordpress.site_id_current_site'));
-                define('BLOG_ID_CURRENT_SITE', $this->app->make('config')->get('wordpress.blog_id_current_site'));
+                define('SUBDOMAIN_INSTALL', config('wordpress.subdomain_install'));
+                define('DOMAIN_CURRENT_SITE', config('wordpress.domain_current_site'));
+                define('PATH_CURRENT_SITE', config('wordpress.path_current_site'));
+                define('SITE_ID_CURRENT_SITE', config('wordpress.site_id_current_site'));
+                define('BLOG_ID_CURRENT_SITE', config('wordpress.blog_id_current_site'));
             }
         }
     }
