@@ -19,6 +19,13 @@ class UserMeta extends Model
     protected $primaryKey = 'umeta_id';
 
     /**
+     * Length of time to cache this model for.
+     *
+     * @var int
+     */
+    protected $rememberFor;
+
+    /**
      * Cache for all meta values.
      *
      * @var array
@@ -26,16 +33,10 @@ class UserMeta extends Model
     private static $cache = [];
 
     /**
-     * Length of time to cache this model for.
-     *
-     * @var integer
-     */
-    protected $rememberFor;
-
-    /**
      * Create a new Eloquent model instance.
      *
      * @param  array $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
