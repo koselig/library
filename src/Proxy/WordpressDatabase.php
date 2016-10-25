@@ -39,6 +39,7 @@ class WordpressDatabase extends wpdb
      * through this class.
      *
      * @param bool $allow_bail
+     *
      * @return void
      */
     public function db_connect($allow_bail = true)
@@ -89,7 +90,7 @@ class WordpressDatabase extends wpdb
         $incompatible_modes = (array) apply_filters('incompatible_sql_modes', $this->incompatible_modes);
 
         foreach ($modes as $i => $mode) {
-            if (in_array($mode, $incompatible_modes)) {
+            if (in_array($mode, $incompatible_modes, true)) {
                 unset($modes[$i]);
             }
         }
@@ -98,50 +99,19 @@ class WordpressDatabase extends wpdb
     }
 
     /**
-     * Real escape, using mysqli_real_escape_string() or mysql_real_escape_string()
+     * Real escape, using mysqli_real_escape_string() or mysql_real_escape_string().
      *
      * @see mysqli_real_escape_string()
      * @see mysql_real_escape_string()
      * @since 2.8.0
-     * @access private
      *
      * @param  string $string to escape
+     *
      * @return string escaped
      */
     public function _real_escape($string)
     {
         return substr(DB::getPdo()->quote($string), 1, -1);
-    }
-
-    /**
-     * Internal function to perform the mysql_query() call.
-     *
-     * @since 3.9.0
-     *
-     * @access private
-     * @see wpdb::query()
-     *
-     * @param string $query The query to run.
-     */
-    private function _do_query($query)
-    {
-        if (defined('SAVEQUERIES') && SAVEQUERIES) {
-            $this->timer_start();
-        }
-
-        if (preg_match('/^\s*(insert|create|alter|truncate|drop)\s/i', $query)) {
-            $this->last_result = $this->result = DB::statement($query);
-        } elseif (preg_match('/^\s*(delete|update|replace)\s/i', $query)) {
-            $this->last_result = $this->result = DB::affectingStatement($query);
-        } else {
-            $this->last_result = $this->result = DB::select($query);
-        }
-
-        $this->num_queries++;
-
-        if (defined('SAVEQUERIES') && SAVEQUERIES) {
-            $this->queries[] = array($query, $this->timer_stop(), $this->get_caller());
-        }
     }
 
     /**
@@ -152,12 +122,14 @@ class WordpressDatabase extends wpdb
      * @since 0.71
      *
      * @param string $query Database query
+     *
      * @return int|false Number of rows affected/selected or false on error
      */
     public function query($query)
     {
         if (!$this->ready) {
             $this->check_current_query = true;
+
             return false;
         }
 
@@ -186,6 +158,7 @@ class WordpressDatabase extends wpdb
             $this->flush();
             if ($stripped_query !== $query) {
                 $this->insert_id = 0;
+
                 return false;
             }
         }
@@ -206,6 +179,7 @@ class WordpressDatabase extends wpdb
             }
 
             $this->print_error($this->last_error);
+
             return false;
         }
 
@@ -221,5 +195,34 @@ class WordpressDatabase extends wpdb
         }
 
         return $return_val;
+    }
+
+    /**
+     * Internal function to perform the mysql_query() call.
+     *
+     * @since 3.9.0
+     * @see wpdb::query()
+     *
+     * @param string $query The query to run.
+     */
+    private function _do_query($query)
+    {
+        if (defined('SAVEQUERIES') && SAVEQUERIES) {
+            $this->timer_start();
+        }
+
+        if (preg_match('/^\s*(insert|create|alter|truncate|drop)\s/i', $query)) {
+            $this->last_result = $this->result = DB::statement($query);
+        } elseif (preg_match('/^\s*(delete|update|replace)\s/i', $query)) {
+            $this->last_result = $this->result = DB::affectingStatement($query);
+        } else {
+            $this->last_result = $this->result = DB::select($query);
+        }
+
+        $this->num_queries++;
+
+        if (defined('SAVEQUERIES') && SAVEQUERIES) {
+            $this->queries[] = [$query, $this->timer_stop(), $this->get_caller()];
+        }
     }
 }

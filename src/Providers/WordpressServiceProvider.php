@@ -3,7 +3,6 @@ namespace Koselig\Providers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use Koselig\Proxy\WordpressDatabase;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
