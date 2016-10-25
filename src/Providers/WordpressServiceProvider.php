@@ -1,7 +1,6 @@
 <?php
 namespace Koselig\Providers;
 
-use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Koselig\Support\Action;
