@@ -44,16 +44,17 @@ class Post extends Model
     }
 
     /**
-     * Get all the posts within a certain post type.
+     * The "booting" method of the model.
      *
-     * @param Builder $query query to add the scope to
-     * @param string $name name of the post type
-     *
-     * @return Builder
+     * @return void
      */
-    public function scopePostType($query, $name)
+    protected static function boot()
     {
-        return $query->where('post_type', $name);
+        parent::boot();
+
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('post_status', 'publish');
+        });
     }
 
     /**
@@ -207,9 +208,21 @@ class Post extends Model
      */
     public function getCategoriesAttribute()
     {
-        return $this->terms()->whereHas('taxonomy', function ($query) {
+        return $this->terms()->whereHas('taxonomy', function (Builder $query) {
             $query->where('taxonomy', 'category');
         })->get();
+    }
+
+    /**
+     * Retrieves the navigation to next/previous post, when applicable.
+     *
+     * @see get_the_post_navigation()
+     * @param array $args
+     * @return string
+     */
+     public static function navigation($args = [])
+     {
+         return get_the_post_navigation($args);
     }
 
     /**
@@ -239,7 +252,7 @@ class Post extends Model
     /**
      * Get the thumbnail of this post.
      *
-     * @see get_the_post_thumbnail
+     * @see Post::thumbnail()
      *
      * @return string
      */
@@ -251,7 +264,7 @@ class Post extends Model
     /**
      * Get the thumbnail of this post.
      *
-     * @see get_the_post_thumbnail
+     * @see wp_get_attachment_image_url
      *
      * @param string $size
      *
@@ -259,7 +272,7 @@ class Post extends Model
      */
     public function thumbnail($size = 'post-thumbnail')
     {
-        return get_the_post_thumbnail_url($this->toWordpressPost(), $size);
+        return wp_get_attachment_image_url($this->getMeta('_thumbnail_id'), $size);
     }
 
     /**
@@ -297,26 +310,12 @@ class Post extends Model
     /**
      * Get the {@link WP_Post} instance for this Post.
      *
-     * @deprecated
+     * @deprecated Use the methods already provided by this model.
      *
      * @return WP_Post
      */
     public function toWordpressPost()
     {
         return new WP_Post((object) $this->toArray());
-    }
-
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('post_status', 'publish');
-        });
     }
 }
