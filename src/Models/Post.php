@@ -44,20 +44,6 @@ class Post extends Model
     }
 
     /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('post_status', 'publish');
-        });
-    }
-
-    /**
      * Get a post by its slug.
      *
      * @param $slug
@@ -213,17 +199,19 @@ class Post extends Model
         })->get();
     }
 
-    /**
-     * Retrieves the navigation to next/previous post, when applicable.
-     *
-     * @see get_the_post_navigation()
-     * @param array $args
-     * @return string
-     */
+     /**
+      * Retrieves the navigation to next/previous post, when applicable.
+      *
+      * @see get_the_post_navigation()
+      *
+      * @param array $args
+      *
+      * @return string
+      */
      public static function navigation($args = [])
      {
          return get_the_post_navigation($args);
-    }
+     }
 
     /**
      * Get the permalink for this post.
@@ -317,5 +305,19 @@ class Post extends Model
     public function toWordpressPost()
     {
         return new WP_Post((object) $this->toArray());
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('post_status', 'publish');
+        });
     }
 }
