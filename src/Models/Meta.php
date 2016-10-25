@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Koselig\Exceptions\UnsatisfiedDependencyException;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
+use Watson\Rememberable\Rememberable;
 
 /**
  * Table containing all metadata about a post.
@@ -14,7 +15,16 @@ use Koselig\Support\Wordpress;
  */
 class Meta extends Model
 {
+    use Rememberable;
+
     public $timestamps = false;
+
+    /**
+     * Length of time to cache this model for.
+     *
+     * @var integer
+     */
+    protected $rememberFor;
 
     /**
      * Cache for all meta values.
@@ -39,6 +49,13 @@ class Meta extends Model
         // Set the current table to the site's own table if we're in a multisite
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
             $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_postmeta');
+        }
+
+        // enable caching if the user has opted for it in their configuration
+        if (config('wordpress.caching')) {
+            $this->rememberFor = config('wordpress.caching');
+        } else {
+            unset($this->rememberFor);
         }
     }
 

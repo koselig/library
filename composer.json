@@ -11,7 +11,8 @@
     "require": {
         "illuminate/support": "5.3.*",
         "illuminate/database": "^5.3",
-        "illuminate/routing": "^5.3"
+        "illuminate/routing": "^5.3",
+        "watson/rememberable": "^2.0"
     },
     "autoload": {
         "psr-4": {
