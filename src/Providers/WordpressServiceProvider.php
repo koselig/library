@@ -3,6 +3,7 @@ namespace Koselig\Providers;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
+use Koselig\Proxy\WordpressDatabase;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 
@@ -32,6 +33,15 @@ class WordpressServiceProvider extends ServiceProvider
         );
 
         $this->setConfig();
+    }
+
+    public function boot()
+    {
+        // Wordpress requires $table_prefix rather than another constant.
+        $table_prefix = 'wp_';
+        $this->setDatabaseConstants($table_prefix);
+        require ABSPATH . 'wp-settings.php';
+
         $this->triggerHooks();
 
         // Set up the WordPress query.
@@ -91,15 +101,11 @@ class WordpressServiceProvider extends ServiceProvider
      */
     protected function setConfig()
     {
-        // Wordpress requires $table_prefix rather than another constant.
-        $table_prefix = 'wp_';
-
         define('WP_DEBUG', config('app.debug'));
         define('WP_DEBUG_DISPLAY', WP_DEBUG);
         define('WP_DEFAULT_THEME', 'koselig');
         define('DISALLOW_FILE_MODS', true);
 
-        $this->setDatabaseConstants($table_prefix);
         $this->setAuthenticationConstants();
         $this->setLocationConstants();
         $this->setMultisiteConstants();
@@ -114,8 +120,6 @@ class WordpressServiceProvider extends ServiceProvider
             'function' => [$this, 'addThemeSupport'],
             'accepted_args' => 0,
         ];
-
-        require ABSPATH . 'wp-settings.php';
     }
 
     /**
