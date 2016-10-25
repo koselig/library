@@ -21,7 +21,7 @@ class Option extends Model
     /**
      * Length of time to cache this model for.
      *
-     * @var integer
+     * @var int
      */
     protected $rememberFor;
 
