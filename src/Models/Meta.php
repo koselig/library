@@ -20,18 +20,18 @@ class Meta extends Model
     public $timestamps = false;
 
     /**
-     * Length of time to cache this model for.
-     *
-     * @var integer
-     */
-    protected $rememberFor;
-
-    /**
      * Cache for all meta values.
      *
      * @var array
      */
     public static $cache = [];
+
+    /**
+     * Length of time to cache this model for.
+     *
+     * @var int
+     */
+    protected $rememberFor;
     protected $primaryKey = 'meta_id';
     protected $table = DB_PREFIX . 'postmeta';
 
