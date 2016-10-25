@@ -26,6 +26,13 @@ class Post extends Model
     protected $prefix = DB_PREFIX;
 
     /**
+     * Length of time to cache this model for.
+     *
+     * @var integer
+     */
+    protected $rememberFor;
+
+    /**
      * Create a new Eloquent model instance.
      *
      * @param  array $attributes
@@ -40,6 +47,13 @@ class Post extends Model
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
             $this->prefix = DB_PREFIX . Wordpress::getSiteId() . '_';
             $this->setTable($this->prefix . 'posts');
+        }
+
+        // enable caching if the user has opted for it in their configuration
+        if (config('wordpress.caching')) {
+            $this->rememberFor = config('wordpress.caching');
+        } else {
+            unset($this->rememberFor);
         }
     }
 

@@ -3,6 +3,7 @@ namespace Koselig\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Watson\Rememberable\Rememberable;
 
 /**
  * Table containing the metadata about users in the CMS.
@@ -11,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserMeta extends Model
 {
+    use Rememberable;
+
     public $timestamps = false;
     protected $table = DB_PREFIX . 'usermeta';
     protected $primaryKey = 'umeta_id';
@@ -21,6 +24,31 @@ class UserMeta extends Model
      * @var array
      */
     private static $cache = [];
+
+    /**
+     * Length of time to cache this model for.
+     *
+     * @var integer
+     */
+    protected $rememberFor;
+
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param  array $attributes
+     * @return void
+     */
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+
+        // enable caching if the user has opted for it in their configuration
+        if (config('wordpress.caching')) {
+            $this->rememberFor = config('wordpress.caching');
+        } else {
+            unset($this->rememberFor);
+        }
+    }
 
     /**
      * Get metadata for a user.

@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Koselig\Support\Wordpress;
+use Watson\Rememberable\Rememberable;
 
 /**
  * Table containing all the users within the CMS.
@@ -14,12 +15,20 @@ use Koselig\Support\Wordpress;
  */
 class User extends Model implements AuthenticatableContract
 {
-    use Authenticatable;
+    use Authenticatable, Rememberable;
+
     public $timestamps = false;
 
     protected $table = DB_PREFIX . 'users';
     protected $primaryKey = 'ID';
     protected $dates = ['user_registered'];
+
+    /**
+     * Length of time to cache this model for.
+     *
+     * @var integer
+     */
+    protected $rememberFor;
 
     /**
      * Create a new Eloquent model instance.
@@ -35,6 +44,13 @@ class User extends Model implements AuthenticatableContract
         // Set the current table to the site's own table if we're in a multisite
         if (Wordpress::multisite() && (Wordpress::getSiteId() !== 0 && Wordpress::getSiteId() !== 1)) {
             $this->setTable(DB_PREFIX . Wordpress::getSiteId() . '_users');
+        }
+
+        // enable caching if the user has opted for it in their configuration
+        if (config('wordpress.caching')) {
+            $this->rememberFor = config('wordpress.caching');
+        } else {
+            unset($this->rememberFor);
         }
     }
 
