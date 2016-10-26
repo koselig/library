@@ -40,6 +40,7 @@ class WordpressDatabase extends wpdb
      * so we'll just pretend we're always connected to whatever is calling us.
      *
      * @param bool $allow_bail
+     *
      * @return bool
      */
     public function check_connection($allow_bail = true)
