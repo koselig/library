@@ -116,11 +116,10 @@ class WordpressDatabase extends wpdb
     }
 
     /**
-     * Real escape, using mysqli_real_escape_string() or mysql_real_escape_string().
+     * Real escape, using PDO's quote function.
      *
-     * @see mysqli_real_escape_string()
-     * @see mysql_real_escape_string()
-     * @since 2.8.0
+     * TODO: eventually swap this out for proper prepared
+     * statements rather than working around Wordpress' limitations.
      *
      * @param  string $string to escape
      *
