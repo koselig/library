@@ -1,6 +1,7 @@
 <?php
 namespace Koselig\Proxy;
 
+use Cache;
 use DB;
 use Illuminate\Database\QueryException;
 use wpdb;
@@ -75,7 +76,9 @@ class WordpressDatabase extends wpdb
     public function set_sql_mode($modes = [])
     {
         if (empty($modes)) {
-            $modes = explode(',', DB::selectOne('SELECT @@SESSION.sql_mode as sql_mode')->sql_mode);
+            $modes = Cache::remember('sql_modes', config('wordpress.caching'), function () {
+                return explode(',', DB::selectOne('SELECT @@SESSION.sql_mode as sql_mode')->sql_mode);
+            });
         }
 
         $modes = array_change_key_case($modes, CASE_UPPER);
@@ -122,10 +125,11 @@ class WordpressDatabase extends wpdb
      * @since 0.71
      *
      * @param string $query Database query
+     * @param bool $skipCache
      *
-     * @return int|false Number of rows affected/selected or false on error
+     * @return false|int Number of rows affected/selected or false on error
      */
-    public function query($query)
+    public function query($query, $skipCache = false)
     {
         if (!$this->ready) {
             $this->check_current_query = true;
@@ -216,7 +220,13 @@ class WordpressDatabase extends wpdb
         } elseif (preg_match('/^\s*(delete|update|replace)\s/i', $query)) {
             $this->last_result = $this->result = DB::affectingStatement($query);
         } else {
-            $this->last_result = $this->result = DB::select($query);
+            if (config('wordpress.caching') && starts_with(strtolower($query), 'select')) {
+                $this->result = Cache::remember('q_' . $query, config('wordpress.caching'), function () use ($query) {
+                    return DB::select($query);
+                });
+
+                $this->last_result = $this->result;
+            }
         }
 
         $this->num_queries++;
