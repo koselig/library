@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Koselig\Exceptions\UnsatisfiedDependencyException;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
+use Watson\Rememberable\Rememberable;
 use WP_Post;
 
 /**
@@ -19,6 +20,8 @@ use WP_Post;
  */
 class Post extends Model
 {
+    use Rememberable;
+
     public $timestamps = false;
     protected $table = DB_PREFIX . 'posts';
     protected $primaryKey = 'ID';
