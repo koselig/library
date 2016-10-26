@@ -34,6 +34,11 @@ class WordpressServiceProvider extends ServiceProvider
         $this->setConfig();
     }
 
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
     public function boot()
     {
         // Wordpress requires $table_prefix rather than another constant.
@@ -45,6 +50,11 @@ class WordpressServiceProvider extends ServiceProvider
 
         // Set up the WordPress query.
         wp();
+
+        if (defined('WP_ADMIN') || str_contains($_SERVER['SCRIPT_NAME'], strrchr(wp_login_url(), '/'))) {
+            // disable query caching when in Wordpress admin
+            config(['wordpress.caching' => 0]);
+        }
     }
 
     /**
@@ -115,6 +125,9 @@ class WordpressServiceProvider extends ServiceProvider
             $_SERVER['HTTP_HOST'] = parse_url(config('app.url'))['host'];
         }
 
+        // we need to register this hook before wp-settings.php is included, which also means
+        // that add_filter hasn't been included yet so we have to add to the wp_filter global
+        // manually.
         $GLOBALS['wp_filter']['after_setup_theme'][10][] = [
             'function' => [$this, 'addThemeSupport'],
             'accepted_args' => 0,

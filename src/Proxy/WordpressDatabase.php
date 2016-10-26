@@ -60,7 +60,9 @@ class WordpressDatabase extends wpdb
      */
     public function db_version()
     {
-        return DB::selectOne('SELECT version() as v')->v;
+        return Cache::remember('sql_version', config('wordpress.caching'), function () {
+            return DB::selectOne('SELECT version() as v')->v;
+        });
     }
 
     /**
@@ -215,18 +217,21 @@ class WordpressDatabase extends wpdb
             $this->timer_start();
         }
 
-        if (preg_match('/^\s*(insert|create|alter|truncate|drop)\s/i', $query)) {
+        if (preg_match('/^\s*(insert|create|alter|truncate|drop|set)\s/i', $query)) {
             $this->last_result = $this->result = DB::statement($query);
         } elseif (preg_match('/^\s*(delete|update|replace)\s/i', $query)) {
             $this->last_result = $this->result = DB::affectingStatement($query);
         } else {
-            if (config('wordpress.caching') && starts_with(strtolower($query), 'select')) {
-                $this->result = Cache::remember('q_' . $query, config('wordpress.caching'), function () use ($query) {
-                    return DB::select($query);
-                });
-
-                $this->last_result = $this->result;
+            if (!config('wordpress.caching')) {
+                // remove cached query if caching has been disabled
+                Cache::forget('q_' . $query);
             }
+
+            $this->result = Cache::remember('q_' . $query, config('wordpress.caching'), function () use ($query) {
+                return DB::select($query);
+            });
+
+            $this->last_result = $this->result;
         }
 
         $this->num_queries++;
