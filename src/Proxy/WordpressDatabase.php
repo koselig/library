@@ -36,6 +36,18 @@ class WordpressDatabase extends wpdb
     }
 
     /**
+     * Laravel handles all the connection handling for us including reconnecting
+     * so we'll just pretend we're always connected to whatever is calling us.
+     *
+     * @param bool $allow_bail
+     * @return bool
+     */
+    public function check_connection($allow_bail = true)
+    {
+        return true;
+    }
+
+    /**
      * Set the properties Wordpress expects so it will run queries for us
      * through this class.
      *
@@ -127,11 +139,10 @@ class WordpressDatabase extends wpdb
      * @since 0.71
      *
      * @param string $query Database query
-     * @param bool $skipCache
      *
      * @return false|int Number of rows affected/selected or false on error
      */
-    public function query($query, $skipCache = false)
+    public function query($query)
     {
         if (!$this->ready) {
             $this->check_current_query = true;
