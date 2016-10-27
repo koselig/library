@@ -119,8 +119,7 @@ class WordpressDatabase extends wpdb
     /**
      * Real escape, using PDO's quote function.
      *
-     * TODO: eventually swap this out for proper prepared
-     * statements rather than working around Wordpress' limitations.
+     * TODO: eventually swap this out for proper prepared statements rather than working around Wordpress' limitations.
      *
      * @param  string $string to escape
      *
