@@ -147,6 +147,11 @@ class WordpressServiceProvider extends ServiceProvider
             return array_merge($pageTemplates, config('templates'));
         });
 
+        // set the ACF storage path
+        Action::hook('acf/settings/save_json', function () {
+            return resource_path('fields');
+        });
+
         Action::hook('network_site_url', [$this, 'rewriteNetworkUrl'], 10, 3);
 
         $this->registerPostTypes();
