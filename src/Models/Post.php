@@ -216,19 +216,19 @@ class Post extends Model
         })->get();
     }
 
-     /**
-      * Retrieves the navigation to next/previous post, when applicable.
-      *
-      * @see get_the_post_navigation()
-      *
-      * @param array $args
-      *
-      * @return string
-      */
-     public static function navigation($args = [])
-     {
-         return get_the_post_navigation($args);
-     }
+    /**
+     * Retrieves the navigation to next/previous post, when applicable.
+     *
+     * @see get_the_post_navigation()
+     *
+     * @param array $args
+     *
+     * @return string
+     */
+    public static function navigation($args = [])
+    {
+        return get_the_post_navigation($args);
+    }
 
     /**
      * Get the permalink for this post.

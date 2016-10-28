@@ -10,6 +10,7 @@ use wpdb;
  * Replace Wordpress' database calls to Laravel's database abstraction
  * to hold a single database connection, and for easier query debugging.
  *
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
  * @author Jordan Doyle <jordan@doyle.wf>
  */
 class WordpressDatabase extends wpdb
@@ -39,11 +40,11 @@ class WordpressDatabase extends wpdb
      * Laravel handles all the connection handling for us including reconnecting
      * so we'll just pretend we're always connected to whatever is calling us.
      *
-     * @param bool $allow_bail
+     * @param bool $allowBail
      *
      * @return bool
      */
-    public function check_connection($allow_bail = true)
+    public function check_connection($allowBail = true)
     {
         return true;
     }
@@ -56,7 +57,7 @@ class WordpressDatabase extends wpdb
      *
      * @return void
      */
-    public function db_connect($allow_bail = true)
+    public function db_connect($allowBail = true)
     {
         $this->is_mysql = true;
         $this->has_connected = true;
@@ -105,10 +106,10 @@ class WordpressDatabase extends wpdb
          *
          * @param array $incompatible_modes An array of incompatible modes.
          */
-        $incompatible_modes = (array) apply_filters('incompatible_sql_modes', $this->incompatible_modes);
+        $incompatibleModes = (array) apply_filters('incompatible_sql_modes', $this->incompatible_modes);
 
         foreach ($modes as $i => $mode) {
-            if (in_array($mode, $incompatible_modes, true)) {
+            if (in_array($mode, $incompatibleModes, true)) {
                 unset($modes[$i]);
             }
         }
@@ -168,11 +169,11 @@ class WordpressDatabase extends wpdb
 
         // If we're writing to the database, make sure the query will write safely.
         if ($this->check_current_query && !$this->check_ascii($query)) {
-            $stripped_query = $this->strip_invalid_text_from_query($query);
+            $strippedQuery = $this->strip_invalid_text_from_query($query);
             // strip_invalid_text_from_query() can perform queries, so we need
             // to flush again, just to make sure everything is clear.
             $this->flush();
-            if ($stripped_query !== $query) {
+            if ($strippedQuery !== $query) {
                 $this->insert_id = 0;
 
                 return false;
@@ -200,17 +201,17 @@ class WordpressDatabase extends wpdb
         }
 
         if (preg_match('/^\s*(create|alter|truncate|drop)\s/i', $query)) {
-            $return_val = $this->result;
+            $return = $this->result;
         } elseif (preg_match('/^\s*(insert|delete|update|replace)\s/i', $query)) {
-            $this->rows_affected = $return_val = $this->result;
+            $this->rows_affected = $return = $this->result;
         } else {
             // Log number of rows the query returned
             // and return number of rows selected
             $this->num_rows = count($this->result);
-            $return_val = $this->result;
+            $return = $this->result;
         }
 
-        return $return_val;
+        return $return;
     }
 
     /**
