@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
+use Request;
 
 /**
  * Service provider for everything Wordpress, configures
@@ -37,6 +38,8 @@ class WordpressServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      *
+     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
+     *
      * @return void
      */
     public function boot()
@@ -51,7 +54,8 @@ class WordpressServiceProvider extends ServiceProvider
         // Set up the WordPress query.
         wp();
 
-        if (defined('WP_ADMIN') || str_contains($_SERVER['SCRIPT_NAME'], strrchr(wp_login_url(), '/'))) {
+        if (!$this->app->runningInConsole()
+            && (defined('WP_ADMIN') || str_contains(Request::server('SCRIPT_NAME'), strrchr(wp_login_url(), '/')))) {
             // disable query caching when in Wordpress admin
             config(['wordpress.caching' => 0]);
         }
@@ -103,7 +107,6 @@ class WordpressServiceProvider extends ServiceProvider
      * Set up the configuration values that wp-config.php
      * does. Use all the values out of .env instead.
      *
-     * @SuppressWarnings(PHPMD.CamelCaseVariableName)
      * @SuppressWarnings(PHPMD.Superglobals)
      *
      * @return void
@@ -121,6 +124,7 @@ class WordpressServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             // allow wordpress to run, even when running from console (ie. artisan compiling)
+            Request::server()
             $_SERVER['SERVER_PROTOCOL'] = 'https';
             $_SERVER['HTTP_HOST'] = parse_url(config('app.url'))['host'];
         }
