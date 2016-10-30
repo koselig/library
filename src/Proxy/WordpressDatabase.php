@@ -53,7 +53,7 @@ class WordpressDatabase extends wpdb
      * Set the properties Wordpress expects so it will run queries for us
      * through this class.
      *
-     * @param bool $allow_bail
+     * @param bool $allowBail
      *
      * @return void
      */
