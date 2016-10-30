@@ -11,6 +11,7 @@ use wpdb;
  * to hold a single database connection, and for easier query debugging.
  *
  * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ *
  * @author Jordan Doyle <jordan@doyle.wf>
  */
 class WordpressDatabase extends wpdb
@@ -99,7 +100,7 @@ class WordpressDatabase extends wpdb
 
         $modes = array_change_key_case($modes, CASE_UPPER);
 
-        /**
+        /*
          * Filters the list of incompatible SQL modes to exclude.
          *
          * @since 3.9.0
