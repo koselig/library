@@ -111,7 +111,7 @@ class Meta extends Model
      *
      * @param int|string|null|Post $page page to get meta for (or name of the meta item to get
      *                                   if you want to get the current page's meta)
-     * @param string|null $name
+     * @param string|null $name name of the field to get
      * @param bool $format whether to format this field or not
      *
      * @throws UnsatisfiedDependencyException
