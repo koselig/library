@@ -155,8 +155,10 @@ class WordpressServiceProvider extends ServiceProvider
             return resource_path('fields');
         });
 
+        // hacky fix to get network admin working
         Action::hook('network_site_url', [$this, 'rewriteNetworkUrl'], 10, 3);
 
+        // register custom post types defined in posttypes
         $this->registerPostTypes();
     }
 
@@ -167,9 +169,9 @@ class WordpressServiceProvider extends ServiceProvider
      */
     protected function registerPostTypes()
     {
-        foreach (config('posttypes') as $key => $value) {
-            register_post_type($key, $value);
-        }
+        collect(config('posttypes'))->each(function ($item, $key) {
+            register_post_type($key, $item);
+        });
     }
 
     /**
