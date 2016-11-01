@@ -1,4 +1,5 @@
 <?php
+
 use Koselig\Models\Meta;
 use Koselig\Models\Post;
 
@@ -31,9 +32,10 @@ if (!function_exists('post')) {
 
 if (!function_exists('meta')) {
     /**
-     * Grab a meta item from the database for the current page
+     * Grab a meta item from the database for the current page.
      *
      * @param string|null $name name of the field to get (or null for all)
+     *
      * @return mixed
      */
     function meta($name = null)
@@ -49,6 +51,7 @@ if (!function_exists('acf')) {
      * @see Meta::acf()
      *
      * @param string|null $name name of the field to get (or null for all)
+     *
      * @return mixed
      */
     function acf($name = null)
