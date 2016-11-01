@@ -8,6 +8,7 @@ if (!function_exists('query')) {
      * Get the main query or convert a query to a {@link \Koselig\Proxy\Query} proxy instance.
      *
      * @param WP_Query|null $query
+     *
      * @return \Koselig\Proxy\Query
      */
     function query(\WP_Query $query = null)
@@ -22,6 +23,7 @@ if (!function_exists('post')) {
      * post.
      *
      * @param WP_Post|null $post
+     *
      * @return Post|null
      */
     function post(WP_Post $post = null)
