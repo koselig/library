@@ -19,8 +19,8 @@ class WordpressTemplatingServiceProvider extends ServiceProvider
     public function boot()
     {
         Blade::directive('loop', function () {
-            return '<?php if (Koselig\Facades\Query::hasPosts()): while (Koselig\Facades\Query::hasPosts()): '
-                . 'Koselig\Facades\Query::post(); $loop = app(\'loop\'); ?>';
+            return '<?php if (query()->hasPosts()): while (query()->hasPosts()): '
+                . 'query()->post(); $post = post(); ?>';
         });
 
         Blade::directive('endloop', function () {

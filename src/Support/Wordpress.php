@@ -1,7 +1,6 @@
 <?php
 namespace Koselig\Support;
 
-use Koselig\Facades\Query;
 use Koselig\Models\User;
 
 /**
@@ -20,7 +19,7 @@ class Wordpress
     public static function id()
     {
         // can't use facades to access properties unfortunately!
-        return app('query')->post->ID ?? null;
+        return query()->post->ID ?? null;
     }
 
     /**
@@ -32,7 +31,7 @@ class Wordpress
      */
     public static function singular($types = '')
     {
-        return Query::singular($types);
+        return query()->singular($types);
     }
 
     /**
@@ -44,7 +43,7 @@ class Wordpress
      */
     public static function archive($types = null)
     {
-        return $types === null || empty($types) ? Query::archive() : Query::postTypeArchive($types);
+        return $types === null || empty($types) ? query()->archive() : query()->postTypeArchive($types);
     }
 
     /**
@@ -66,7 +65,7 @@ class Wordpress
             }
         }
 
-        return Query::author($users);
+        return query()->author($users);
     }
 
     /**
