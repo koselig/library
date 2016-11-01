@@ -29,6 +29,7 @@ use WP_Query;
  * @property int $foundPosts The amount of found posts for the current query.
  * @property int $maxNumPages The amount of pages.
  * @property int $maxNumCommentPages The amount of comment pages.
+ *
  * @method static void init Initiates object properties and sets default values.
  * @method static void parseQueryVars Reparse the query vars.
  * @method static array fillQueryVars(array $array) Fills in the query variables, which do not exist within the
