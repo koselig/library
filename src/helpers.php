@@ -44,7 +44,7 @@ if (!function_exists('meta')) {
     }
 }
 
-if (!function_exists('acf')) {
+if (!function_exists('field')) {
     /**
      * Grab an ACF field from the database for the current page.
      *
@@ -54,7 +54,7 @@ if (!function_exists('acf')) {
      *
      * @return mixed
      */
-    function acf($name = null)
+    function field($name = null)
     {
         return Meta::acf($name);
     }
