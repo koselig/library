@@ -9,6 +9,26 @@ use WP_Query;
 /**
  * Proxies the {@link \WP_Query} class from Wordpress for a more elegant syntax.
  *
+ * @property array $query Query vars set by the user
+ * @property array $queryVars Query vars, after parsing
+ * @property \WP_Tax_Query $taxQuery Taxonomy query
+ * @property \WP_Meta_Query $metaQuery Metadata query container
+ * @property \WP_Date_Query $dateQuery Date query container
+ * @property object|array $queriedObject Holds the data for a single object that is queried.
+ * @property int $queriedObjectId The ID of the queried object.
+ * @property string $request Get post database query
+ * @property array $posts List of posts.
+ * @property int $postCount The amount of posts for the current query.
+ * @property int $currentPost Index of the current item in the loop.
+ * @property bool $inTheLoop Whether the loop has started and the caller is in the loop.
+ * @property WP_Post $post The current post.
+ * @property array $comments The list of comments for current post.
+ * @property int $commentCount The amount of comments for the posts.
+ * @property int $currentComment The index of the comment in the comment loop.
+ * @property int $comment Current comment ID.
+ * @property int $foundPosts The amount of found posts for the current query.
+ * @property int $maxNumPages The amount of pages.
+ * @property int $maxNumCommentPages The amount of comment pages.
  * @method static void init Initiates object properties and sets default values.
  * @method static void parseQueryVars Reparse the query vars.
  * @method static array fillQueryVars(array $array) Fills in the query variables, which do not exist within the
