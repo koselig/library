@@ -107,6 +107,27 @@ class WordpressServiceProvider extends ServiceProvider
     }
 
     /**
+     * Register custom sidebars with Wordpress.
+     *
+     * @return void
+     */
+    public function addSidebarSupport()
+    {
+        collect(config('sidebars'))->each(function ($value) {
+            register_sidebar(array_merge([
+                'name' => '',
+                'id' => str_slug('sidebar-' . ($value['name'] ?? count($GLOBALS['wp_registered_sidebars']) + 1)),
+                'description' => '',
+                'class' => '',
+                'before_widget' => '<div id="%1$s" class="widget %2$s">',
+                'after_widget' => '</div>',
+                'before_title' => '<h2>',
+                'after_title' => '</h2>',
+            ], $value));
+        });
+    }
+
+    /**
      * Set up the configuration values that wp-config.php
      * does. Use all the values out of .env instead.
      *
@@ -155,27 +176,6 @@ class WordpressServiceProvider extends ServiceProvider
 
         // register custom post types defined in posttypes
         $this->registerPostTypes();
-    }
-
-    /**
-     * Register custom sidebars with Wordpress.
-     *
-     * @return void
-     */
-    public function addSidebarSupport()
-    {
-        collect(config('sidebars'))->each(function ($value) {
-            register_sidebar(array_merge([
-                'name' => '',
-                'id' => str_slug('sidebar-' . ($value['name'] ?? count($GLOBALS['wp_registered_sidebars']) + 1)),
-                'description' => '',
-                'class' => '',
-                'before_widget' => '<div id="%1$s" class="widget %2$s">',
-                'after_widget' => '</div>',
-                'before_title' => '<h2>',
-                'after_title' => '</h2>'
-            ], $value));
-        });
     }
 
     /**
