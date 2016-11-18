@@ -33,6 +33,9 @@ class WordpressServiceProvider extends ServiceProvider
         );
 
         $this->setConfig();
+
+        Action::hook('after_setup_theme', [$this, 'addThemeSupport']);
+        Action::hook('widgets_init', [$this, 'addSidebarSupport']);
     }
 
     /**
@@ -49,10 +52,10 @@ class WordpressServiceProvider extends ServiceProvider
         $this->setDatabaseConstants($table_prefix);
         require ABSPATH . 'wp-settings.php';
 
-        $this->triggerHooks();
-
         // Set up the WordPress query.
         wp();
+
+        $this->triggerHooks();
 
         if (!$this->app->runningInConsole()
             && (defined('WP_ADMIN') || str_contains(Request::server('SCRIPT_NAME'), strrchr(wp_login_url(), '/')))) {
@@ -68,13 +71,13 @@ class WordpressServiceProvider extends ServiceProvider
      */
     public function addThemeSupport()
     {
-        foreach (config('supports') as $key => $value) {
+        collect(config('supports'))->each(function ($value, $key) {
             if (is_string($key)) {
                 add_theme_support($key, $value);
             } else {
                 add_theme_support($value);
             }
-        }
+        });
     }
 
     /**
@@ -127,14 +130,6 @@ class WordpressServiceProvider extends ServiceProvider
             $_SERVER['SERVER_PROTOCOL'] = 'https';
             $_SERVER['HTTP_HOST'] = parse_url(config('app.url'))['host'];
         }
-
-        // we need to register this hook before wp-settings.php is included, which also means
-        // that add_filter hasn't been included yet so we have to add to the wp_filter global
-        // manually.
-        $GLOBALS['wp_filter']['after_setup_theme'][10][] = [
-            'function' => [$this, 'addThemeSupport'],
-            'accepted_args' => 0,
-        ];
     }
 
     /**
@@ -160,6 +155,27 @@ class WordpressServiceProvider extends ServiceProvider
 
         // register custom post types defined in posttypes
         $this->registerPostTypes();
+    }
+
+    /**
+     * Register custom sidebars with Wordpress.
+     *
+     * @return void
+     */
+    public function addSidebarSupport()
+    {
+        collect(config('sidebars'))->each(function ($value) {
+            register_sidebar(array_merge([
+                'name' => '',
+                'id' => str_slug('sidebar-' . ($value['name'] ?? count($GLOBALS['wp_registered_sidebars']) + 1)),
+                'description' => '',
+                'class' => '',
+                'before_widget' => '<div id="%1$s" class="widget %2$s">',
+                'after_widget' => '</div>',
+                'before_title' => '<h2>',
+                'after_title' => '</h2>'
+            ], $value));
+        });
     }
 
     /**
