@@ -44,7 +44,7 @@ class Action
      * @param mixed $value value to run filters on
      * @param array ...$params extra params to pass to filters
      *
-     * @return mixed|void
+     * @return mixed
      */
     public static function filter($tag, $value, ...$params)
     {

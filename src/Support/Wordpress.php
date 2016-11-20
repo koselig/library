@@ -110,6 +110,20 @@ class Wordpress
     }
 
     /**
+     * Get the current Wordpress version, includes Wordpress' version.php if it has to.
+     *
+     * @return mixed
+     */
+    public static function version()
+    {
+        if (!isset($GLOBALS['wp_version'])) {
+            require_once ABSPATH . WPINC . '/version.php';
+        }
+
+        return $GLOBALS['wp_version'];
+    }
+
+    /**
      * Get the current logged in user. Generally, you shouldn't be using this
      * function and should instead be using <code>auth()->user()</code> from Laravel to get
      * the current logged in Wordpress user.
