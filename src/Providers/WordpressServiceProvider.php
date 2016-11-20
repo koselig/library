@@ -50,6 +50,7 @@ class WordpressServiceProvider extends ServiceProvider
         // Wordpress requires $table_prefix rather than another constant.
         $table_prefix = 'wp_';
         $this->setDatabaseConstants($table_prefix);
+
         require ABSPATH . 'wp-settings.php';
 
         // Set up the WordPress query.
@@ -164,11 +165,6 @@ class WordpressServiceProvider extends ServiceProvider
         // register the user's templates
         Action::hook('theme_page_templates', function ($pageTemplates) {
             return array_merge($pageTemplates, config('templates'));
-        });
-
-        // set the ACF storage path
-        Action::hook('acf/settings/save_json', function () {
-            return resource_path('fields');
         });
 
         // hacky fix to get network admin working
