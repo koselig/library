@@ -2,6 +2,7 @@
 namespace Koselig\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
@@ -29,6 +30,7 @@ use Watson\Rememberable\Rememberable;
  * @property Post $post post this comment belongs to
  * @property User $user user this comment belongs to
  * @property Comment $parent comment this comment is in reply to
+ * @property Comment[]|Collection $children comments that belong to this comment
  *
  * @author Jordan Doyle <jordan@doyle.wf>
  */
@@ -73,6 +75,16 @@ class Comment extends Model
     }
 
     /**
+     * Get all the comments that belong to this comment.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function children()
+    {
+        return $this->hasMany(Comment::class, 'comment_parent');
+    }
+
+    /**
      * Get the post that this comment belongs to.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -102,6 +114,11 @@ class Comment extends Model
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the comment this comment belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function parent()
     {
         return $this->belongsTo(self::class, 'comment_parent');
