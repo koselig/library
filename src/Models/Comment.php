@@ -81,7 +81,7 @@ class Comment extends Model
      */
     public function children()
     {
-        return $this->hasMany(Comment::class, 'comment_parent');
+        return $this->hasMany(self::class, 'comment_parent');
     }
 
     /**
