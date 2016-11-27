@@ -85,11 +85,18 @@ class Post extends Model
     /**
      * Get all the comments that belong to this post.
      *
+     * @param bool $topLevel only get the top level comments for this post
      * @return HasMany
      */
-    public function comments()
+    public function comments(bool $topLevel = true)
     {
-        return $this->hasMany(Comment::class, 'comment_post_ID');
+        $relation = $this->hasMany(Comment::class, 'comment_post_ID');
+
+        if ($topLevel) {
+            $relation->where('comment_parent', 0);
+        }
+
+        return $relation;
     }
 
     /**
