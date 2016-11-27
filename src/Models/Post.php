@@ -86,6 +86,7 @@ class Post extends Model
      * Get all the comments that belong to this post.
      *
      * @param bool $topLevel only get the top level comments for this post
+     *
      * @return HasMany
      */
     public function comments(bool $topLevel = true)
