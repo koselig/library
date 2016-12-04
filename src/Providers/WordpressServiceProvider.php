@@ -24,13 +24,8 @@ class WordpressServiceProvider extends ServiceProvider
     public function register()
     {
         // get the path wordpress is installed in
-        define(
-            'WP_PATH',
-            json_decode(
-                file_get_contents($this->app->basePath() . DIRECTORY_SEPARATOR . 'composer.json'),
-                true
-            )['extra']['wordpress-install-dir'] . '/'
-        );
+        define('WP_PATH', json_decode(file_get_contents($this->app->basePath() . DIRECTORY_SEPARATOR . 'composer.json'),
+                true)['extra']['wordpress-install-dir'] . '/');
 
         $this->setConfig();
 
@@ -42,7 +37,7 @@ class WordpressServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
-     *
+
      * @return void
      */
     public function boot()

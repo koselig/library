@@ -236,10 +236,10 @@ class WordpressDatabase extends wpdb
         } else {
             if (!config('wordpress.caching')) {
                 // remove cached query if caching has been disabled
-                Cache::forget('q_' . $query);
+                Cache::forget('q:' . $query);
             }
 
-            $this->result = Cache::remember('q_' . $query, config('wordpress.caching'), function () use ($query) {
+            $this->result = Cache::remember('q:' . $query, config('wordpress.caching'), function () use ($query) {
                 return DB::select($query);
             });
 
