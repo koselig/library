@@ -5,7 +5,7 @@ use Koselig\Models\Post;
 
 if (!function_exists('query')) {
     /**
-     * Get the main query or convert a query to a {@link \Koselig\Proxy\Query} proxy instance.
+     * Get the main query or convert a {@link WP_Query} to a {@link \Koselig\Proxy\Query} proxy instance.
      *
      * @param WP_Query|null $query
      *
