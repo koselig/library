@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Koselig\Support\Action;
 use Koselig\Support\Wordpress;
 use Watson\Rememberable\Rememberable;
+use WP_Comment;
 
 /**
  * Table containing all the comments belonging to posts.
@@ -112,6 +113,28 @@ class Comment extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get an avatar for the comment.
+     *
+     * @param array $args args to pass to {@link get_avatar_url}
+     * @return false|string
+     */
+    public function avatar($args = [])
+    {
+        return get_avatar_url($this->toWordpressComment(), $args);
+    }
+
+    /**
+     * Get the {@link WP_Comment} instance for this Comment.
+     *
+     * @deprecated Use the methods already provided by this model.
+     * @return WP_Comment
+     */
+    public function toWordpressComment()
+    {
+        return new WP_Comment((object) $this->toArray());
     }
 
     /**
