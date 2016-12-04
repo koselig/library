@@ -9,7 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Koselig\Exceptions\UnsatisfiedDependencyException;
 use Koselig\Support\Action;
+use Koselig\Support\RecursiveCommentIterator;
 use Koselig\Support\Wordpress;
+use RecursiveIteratorIterator;
 use Watson\Rememberable\Rememberable;
 use WP_Post;
 
@@ -27,6 +29,20 @@ class Post extends Model
     protected $primaryKey = 'ID';
     protected $dates = ['post_date', 'post_date_gmt', 'post_modified', 'post_modified_gmt'];
     protected $prefix = DB_PREFIX;
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('post_status', 'publish');
+        });
+    }
 
     /**
      * Length of time to cache this model for.
@@ -321,28 +337,24 @@ class Post extends Model
     }
 
     /**
+     * Get an iterator for all the comments in this post.
+     *
+     * @param int $flags flags to pass to the {@link RecursiveIteratorIterator}
+     * @return RecursiveIteratorIterator
+     */
+    public function getCommentIterator($flags = RecursiveIteratorIterator::SELF_FIRST)
+    {
+        return new RecursiveIteratorIterator(new RecursiveCommentIterator($this->comments), $flags);
+    }
+
+    /**
      * Get the {@link WP_Post} instance for this Post.
      *
      * @deprecated Use the methods already provided by this model.
-     *
      * @return WP_Post
      */
     public function toWordpressPost()
     {
         return new WP_Post((object) $this->toArray());
-    }
-
-    /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('post_status', 'publish');
-        });
     }
 }
