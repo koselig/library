@@ -90,6 +90,18 @@ class Wordpress
     }
 
     /**
+     * Get a Wordpress option from the database.
+     *
+     * @param string $name name of the option to get
+     * @param mixed $default value to return if we don't have a value for the option.
+     * @return mixed
+     */
+    public static function option($name, $default = false)
+    {
+        return get_option($name, $default);
+    }
+
+    /**
      * Get the current multisite id.
      *
      * @return int
