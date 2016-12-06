@@ -205,6 +205,10 @@ class WordpressDatabase extends wpdb
             $return = $this->result;
         } elseif (preg_match('/^\s*(insert|delete|update|replace)\s/i', $query)) {
             $this->rows_affected = $return = $this->result;
+
+            if (preg_match('/^\s*(insert|replace)\s/i', $query)) {
+                $this->insert_id = DB::getPdo()->lastInsertId();
+            }
         } else {
             // Log number of rows the query returned
             // and return number of rows selected
