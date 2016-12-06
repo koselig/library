@@ -19,17 +19,7 @@ class Action
     public static function hook($tag, $function, $priority = 10, $acceptedArgs = 1)
     {
         if (!function_exists('add_filter')) {
-            // we need to register this hook before wp-settings.php is included, which also means
-            // that add_filter hasn't been included yet so we have to add to the wp_filter global
-            // manually.
-            $GLOBALS['wp_filter'][$tag][$priority][] = [
-                'function' => function (...$args) use ($function) {
-                    return app()->call($function, $args);
-                },
-                'accepted_args' => $acceptedArgs,
-            ];
-
-            return;
+            require_once ABSPATH . '/wp-includes/plugin.php';
         }
 
         add_filter($tag, function (...$args) use ($function) {
