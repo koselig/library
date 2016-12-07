@@ -10,8 +10,8 @@ use RecursiveIterator;
  */
 class RecursiveMenuIterator implements RecursiveIterator
 {
-    private $current = 0;
     public $items;
+    private $current = 0;
 
     /**
      * Create a new RecursiveMenuIterator instance.
@@ -33,7 +33,7 @@ class RecursiveMenuIterator implements RecursiveIterator
 
             // only have nodes without a parent at the top level of the tree
             $this->items = collect($itemsArray)->filter(function ($item) {
-                return $item->menu_item_parent == 0;
+                return $item->menu_item_parent === 0;
             })->reverse()->values();
         } else {
             $this->items = $menu;
@@ -41,9 +41,12 @@ class RecursiveMenuIterator implements RecursiveIterator
     }
 
     /**
-     * Return the current element
+     * Return the current element.
+     *
      * @link http://php.net/manual/en/iterator.current.php
+     *
      * @return \WP_Post Can return any type.
+     *
      * @since 5.0.0
      */
     public function current()
@@ -52,9 +55,12 @@ class RecursiveMenuIterator implements RecursiveIterator
     }
 
     /**
-     * Move forward to next element
+     * Move forward to next element.
+     *
      * @link http://php.net/manual/en/iterator.next.php
+     *
      * @return void Any returned value is ignored.
+     *
      * @since 5.0.0
      */
     public function next()
@@ -63,9 +69,12 @@ class RecursiveMenuIterator implements RecursiveIterator
     }
 
     /**
-     * Return the key of the current element
+     * Return the key of the current element.
+     *
      * @link http://php.net/manual/en/iterator.key.php
+     *
      * @return mixed scalar on success, or null on failure.
+     *
      * @since 5.0.0
      */
     public function key()
@@ -74,10 +83,13 @@ class RecursiveMenuIterator implements RecursiveIterator
     }
 
     /**
-     * Checks if current position is valid
+     * Checks if current position is valid.
+     *
      * @link http://php.net/manual/en/iterator.valid.php
-     * @return boolean The return value will be casted to boolean and then evaluated.
+     *
+     * @return bool The return value will be casted to boolean and then evaluated.
      * Returns true on success or false on failure.
+     *
      * @since 5.0.0
      */
     public function valid()
@@ -86,9 +98,12 @@ class RecursiveMenuIterator implements RecursiveIterator
     }
 
     /**
-     * Rewind the Iterator to the first element
+     * Rewind the Iterator to the first element.
+     *
      * @link http://php.net/manual/en/iterator.rewind.php
+     *
      * @return void Any returned value is ignored.
+     *
      * @since 5.0.0
      */
     public function rewind()
@@ -98,8 +113,11 @@ class RecursiveMenuIterator implements RecursiveIterator
 
     /**
      * Returns if an iterator can be created for the current entry.
+     *
      * @link http://php.net/manual/en/recursiveiterator.haschildren.php
+     *
      * @return bool true if the current entry can be iterated over, otherwise returns false.
+     *
      * @since 5.1.0
      */
     public function hasChildren()
@@ -109,8 +127,11 @@ class RecursiveMenuIterator implements RecursiveIterator
 
     /**
      * Returns an iterator for the current entry.
+     *
      * @link http://php.net/manual/en/recursiveiterator.getchildren.php
+     *
      * @return RecursiveIterator An iterator for the current entry.
+     *
      * @since 5.1.0
      */
     public function getChildren()
