@@ -31,20 +31,6 @@ class Post extends Model
     protected $prefix = DB_PREFIX;
 
     /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::addGlobalScope('published', function (Builder $builder) {
-            $builder->where('post_status', 'publish');
-        });
-    }
-
-    /**
      * Length of time to cache this model for.
      *
      * @var int
@@ -340,6 +326,7 @@ class Post extends Model
      * Get an iterator for all the comments in this post.
      *
      * @param int $flags flags to pass to the {@link RecursiveIteratorIterator}
+     *
      * @return RecursiveIteratorIterator
      */
     public function getCommentIterator($flags = RecursiveIteratorIterator::SELF_FIRST)
@@ -351,10 +338,25 @@ class Post extends Model
      * Get the {@link WP_Post} instance for this Post.
      *
      * @deprecated Use the methods already provided by this model.
+     *
      * @return WP_Post
      */
     public function toWordpressPost()
     {
         return new WP_Post((object) $this->toArray());
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('published', function (Builder $builder) {
+            $builder->where('post_status', 'publish');
+        });
     }
 }
