@@ -119,6 +119,7 @@ class Comment extends Model
      * Get an avatar for the comment.
      *
      * @param array $args args to pass to {@link get_avatar_url}
+     *
      * @return false|string
      */
     public function avatar($args = [])
@@ -130,6 +131,7 @@ class Comment extends Model
      * Get the {@link WP_Comment} instance for this Comment.
      *
      * @deprecated Use the methods already provided by this model.
+     *
      * @return WP_Comment
      */
     public function toWordpressComment()
