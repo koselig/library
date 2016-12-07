@@ -32,3 +32,4 @@ disabled:
   - concat_without_spaces
   - single_blank_line_before_namespace
   - not_operator_with_successor_space
+  - length_ordered_imports
