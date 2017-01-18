@@ -105,6 +105,7 @@ class Wordpress
      *
      * @param string $name name of the option to get
      * @param mixed $default value to return if we don't have a value for the option.
+     *
      * @return mixed
      */
     public static function option($name, $default = false)

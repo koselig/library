@@ -70,12 +70,14 @@ if (!function_exists('menu')) {
      * @param string $name name of the menu to get
      * @param int $depth how far to recurse down the nodes
      * @param int $mode flags to pass to the {@link RecursiveIteratorIterator}
+     *
      * @return RecursiveIteratorIterator
      */
     function menu($name, $depth = -1, $mode = RecursiveIteratorIterator::SELF_FIRST)
     {
         $iterator = new RecursiveIteratorIterator(new RecursiveMenuIterator($name), $mode);
         $iterator->setMaxDepth($depth);
+
         return $iterator;
     }
 }
