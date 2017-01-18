@@ -35,6 +35,17 @@ class Wordpress
     }
 
     /**
+     * Check if the current page is a category page.
+     *
+     * @param array|string $categories categories to test for
+     * @return bool
+     */
+    public static function category($categories = '')
+    {
+        return query()->category($categories);
+    }
+
+    /**
      * Check if the current page is an archive page.
      *
      * @param string|array|null $types check if the archive page is for this type

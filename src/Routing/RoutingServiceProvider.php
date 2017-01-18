@@ -29,5 +29,6 @@ class RoutingServiceProvider extends ServiceProvider
         Router::macro('archive', [$routing, 'archive']);
         Router::macro('singular', [$routing, 'singular']);
         Router::macro('author', [$routing, 'author']);
+        Router::macro('category', [$routing, 'category']);
     }
 }
