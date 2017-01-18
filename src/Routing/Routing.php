@@ -28,6 +28,37 @@ class Routing
     }
 
     /**
+     * Register a new category route with the router. Optionally supply
+     * the categories you'd like to supply with this route.
+     *
+     * @param callable|string|array $categories
+     * @param callable|array|string|null $action
+     *
+     * @return \Illuminate\Routing\Route
+     */
+    public function category($categories = [], $action = [])
+    {
+        if (empty($action)) {
+            $action = $categories;
+            $categories = [];
+        }
+
+        if (!is_array($categories)) {
+            $categories = [$categories];
+        }
+
+        $action = $this->formatAction($action);
+
+        $route = (new CategoryRoute($action['method'], $categories, $action))
+            ->setRouter(app('router'))
+            ->setContainer(app(Container::class));
+
+        $route = $this->applyStack($route);
+
+        return Route::getRoutes()->add($route);
+    }
+
+    /**
      * Register a new page route with the router.
      *
      * @param  string $slug slug to match
