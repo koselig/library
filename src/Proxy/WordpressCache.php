@@ -12,6 +12,11 @@ use Illuminate\Cache\TaggableStore;
 class WordpressCache
 {
     /**
+     * Prefix used for anything cached using the Wordpress API so it doesn't conflict
+     * with our normal caching.
+     */
+    const PREFIX = 'wp';
+    /**
      * The amount of times the cache data was already stored in the cache.
      *
      * @var int
@@ -19,7 +24,7 @@ class WordpressCache
     protected $cacheHits = 0;
 
     /**
-     * Track how may requests were not cached
+     * Track how may requests were not cached.
      *
      * @var int
      */
@@ -54,12 +59,6 @@ class WordpressCache
     protected $nonPersistentStore = [];
 
     /**
-     * Prefix used for anything cached using the Wordpress API so it doesn't conflict
-     * with our normal caching.
-     */
-    const PREFIX = 'wp';
-
-    /**
      * WordpressCache constructor.
      */
     public function __construct()
@@ -87,6 +86,7 @@ class WordpressCache
      * @param   mixed $value The value to store.
      * @param   string $group The group value appended to the $key.
      * @param   int $expiration The expiration time, defaults to 0.
+     *
      * @return  bool Returns TRUE on success or FALSE on failure.
      */
     public function add($key, $value, $group = 'default', $expiration = 0)
@@ -95,7 +95,7 @@ class WordpressCache
             return false;
         }
 
-        if (in_array($group, $this->nonPersistentGroups)) {
+        if (in_array($group, $this->nonPersistentGroups, true)) {
             if (!isset($this->nonPersistentStore[$group])) {
                 $this->nonPersistentStore[$group] = [];
             } elseif (isset($this->nonPersistentStore[$group][$key])) {
@@ -103,6 +103,7 @@ class WordpressCache
             }
 
             $this->nonPersistentStore[$group][$key] = $value;
+
             return true;
         }
 
@@ -112,6 +113,7 @@ class WordpressCache
 
         if ($expiration === 0) {
             static::getCache($group)->forever($this->buildKey($group, $key), $value);
+
             return true;
         }
 
@@ -128,16 +130,18 @@ class WordpressCache
      * @param   mixed $value The value to store.
      * @param   string $group The group value appended to the $key.
      * @param   int $expiration The expiration time, defaults to 0.
+     *
      * @return  bool Returns TRUE on success or FALSE on failure.
      */
     public function replace($key, $value, $group = 'default', $expiration = 0)
     {
-        if (in_array($group, $this->nonPersistentGroups)) {
+        if (in_array($group, $this->nonPersistentGroups, true)) {
             if (!isset($this->nonPersistentStore[$group][$key])) {
                 return false;
             }
 
             $this->nonPersistentStore[$group][$key] = $value;
+
             return true;
         }
 
@@ -147,10 +151,12 @@ class WordpressCache
 
         if ($expiration === 0) {
             static::getCache($group)->forever($this->buildKey($group, $key), $value);
+
             return true;
         }
 
         static::getCache($group)->put($this->buildKey($group, $key), $value, $expiration / 60);
+
         return true;
     }
 
@@ -159,11 +165,12 @@ class WordpressCache
      *
      * @param   string $key The key under which to store the value.
      * @param   string $group The group value appended to the $key.
+     *
      * @return  bool  Returns TRUE on success or FALSE on failure.
      */
     public function delete($key, $group = 'default')
     {
-        if (in_array($group, $this->nonPersistentGroups)) {
+        if (in_array($group, $this->nonPersistentGroups, true)) {
             if (isset($this->nonPersistentStore[$group][$key])) {
                 unset($this->nonPersistentStore[$group][$key]);
             }
@@ -201,20 +208,23 @@ class WordpressCache
      *
      * @param   string $key The key under which to store the value.
      * @param   string $group The group value appended to the $key.
-     * @param   boolean $force Optional. Ignored
+     * @param   bool $force Optional. Ignored
      * @param   bool &$found Optional. Whether the key was found in the cache. Disambiguates a return of
      *                                    false, a storable value. Passed by reference. Default null.
+     *
      * @return  bool|mixed                Cached object value.
      */
     public function get($key, $group = 'default', $force = false, &$found = null)
     {
-        if (in_array($group, $this->nonPersistentGroups)) {
+        if (in_array($group, $this->nonPersistentGroups, true)) {
             if (!isset($this->nonPersistentStore[$group][$key])) {
                 $found = false;
+
                 return false;
             }
 
             $found = true;
+
             return $this->nonPersistentStore[$group][$key];
         }
 
@@ -226,6 +236,7 @@ class WordpressCache
         } else {
             $this->cacheMisses++;
             $found = false;
+
             return false;
         }
 
@@ -233,16 +244,17 @@ class WordpressCache
     }
 
     /**
-     * Increment a counter by the amount specified
+     * Increment a counter by the amount specified.
      *
      * @param  string $key
      * @param  int $offset
      * @param  string $group
+     *
      * @return int|bool False on failure, the item's new value on success.
      */
     public function incr($key, $offset = 1, $group = 'default')
     {
-        if (in_array($group, $this->nonPersistentGroups)) {
+        if (in_array($group, $this->nonPersistentGroups, true)) {
             if (!isset($this->nonPersistentStore[$group])) {
                 $this->nonPersistentStore[$group] = [];
             }
@@ -252,6 +264,7 @@ class WordpressCache
             }
 
             $this->nonPersistentStore[$group][$key]++;
+
             return true;
         }
 
@@ -261,16 +274,17 @@ class WordpressCache
     }
 
     /**
-     * Decrease a counter by the amount specified
+     * Decrease a counter by the amount specified.
      *
      * @param  string $key
      * @param  int $offset
      * @param  string $group
+     *
      * @return int|bool False on failure, the item's new value on success.
      */
     public function decr($key, $offset = 1, $group = 'default')
     {
-        if (in_array($group, $this->nonPersistentGroups)) {
+        if (in_array($group, $this->nonPersistentGroups, true)) {
             if (!isset($this->nonPersistentStore[$group])) {
                 $this->nonPersistentStore[$group] = [];
             }
@@ -280,6 +294,7 @@ class WordpressCache
             }
 
             $this->nonPersistentStore[$group][$key]--;
+
             return true;
         }
 
@@ -297,21 +312,24 @@ class WordpressCache
      * @param   mixed $value The value to store.
      * @param   string $group The group value appended to the $key.
      * @param   int $expiration The expiration time, defaults to 0.
+     *
      * @return  bool               Returns TRUE on success or FALSE on failure.
      */
     public function set($key, $value, $group = 'default', $expiration = 0)
     {
-        if (in_array($group, $this->nonPersistentGroups)) {
+        if (in_array($group, $this->nonPersistentGroups, true)) {
             if (!isset($this->nonPersistentStore[$group])) {
                 $this->nonPersistentStore[$group] = [];
             }
 
             $this->nonPersistentStore[$group][$key] = $value;
+
             return true;
         }
 
         if ($expiration === 0) {
             static::getCache($group)->forever($this->buildKey($group, $key), $value);
+
             return true;
         }
 
@@ -331,7 +349,7 @@ class WordpressCache
     }
 
     /**
-     * Sets the list of non-persistent cache groups
+     * Sets the list of non-persistent cache groups.
      *
      * @param array $groups List of groups that should not be persisted.
      */
@@ -344,13 +362,14 @@ class WordpressCache
      * Get the cache driver we should be saving to and add a tag if the driver supports it.
      *
      * @param string $group
+     *
      * @return Cache|\Illuminate\Cache\TaggedCache
      */
     protected static function getCache($group = 'default')
     {
         return Cache::getStore() instanceof TaggableStore ? Cache::tags([
             sprintf('%s:%s:%s', static::PREFIX . config('cache.prefix'), $group ?: 'default'),
-            sprintf('%s:%s', static::PREFIX, config('cache.prefix'))
+            sprintf('%s:%s', static::PREFIX, config('cache.prefix')),
         ]) : cache();
     }
 
@@ -359,15 +378,16 @@ class WordpressCache
      *
      * @param string $group The group value appended to the $key.
      * @param string $key The key under which to store the value.
+     *
      * @return string
      */
-    protected function buildKey($group = 'default', $key)
+    protected function buildKey($group, $key)
     {
         if (empty($group)) {
             $group = 'default';
         }
 
-        $prefix = (is_multisite() && !in_array($group, $this->globalGroups)) ? ($this->blogPrefix . ':') : '';
+        $prefix = (is_multisite() && !in_array($group, $this->globalGroups, true)) ? ($this->blogPrefix . ':') : '';
 
         return sprintf('%s:%s%s:%s', static::PREFIX, $prefix, $group, $key);
     }
