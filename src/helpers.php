@@ -11,6 +11,7 @@ if (!function_exists('__')) {
      * @param $key key of the translation
      * @param array|string $replace replacements for laravel or domain for wordpress
      * @param string $locale locale for laravel, not used for wordpress
+     *
      * @return string
      */
     function __($key, $replace = [], $locale = null)
