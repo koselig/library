@@ -4,6 +4,34 @@ use Koselig\Models\Meta;
 use Koselig\Models\Post;
 use Koselig\Support\RecursiveMenuIterator;
 
+if (!function_exists('__')) {
+    /**
+     * Tries to get a translation from both Laravel and Wordpress.
+     *
+     * @param $key key of the translation
+     * @param array|string $replace replacements for laravel or domain for wordpress
+     * @param string $locale locale for laravel, not used for wordpress
+     * @return string
+     */
+    function __($key, $replace = [], $locale = null)
+    {
+        if (is_array($replace)) {
+            try {
+                return app('translator')->getFromJson($key, $replace, $locale);
+            } catch (\Exception $e) {
+                // failed to get translation from Laravel
+                if ((!empty($replace) && !is_string($replace)) || !empty($locale)) {
+                    // this doesn't look like something we can pass to WordPress, lets
+                    // rethrow the exception
+                    throw $e;
+                }
+            }
+        }
+
+        return translate($key, empty($replace) ? 'default' : $replace);
+    }
+}
+
 if (!function_exists('query')) {
     /**
      * Get the main query or convert a {@link WP_Query} to a {@link \Koselig\Proxy\Query} proxy instance.
