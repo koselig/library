@@ -1,6 +1,7 @@
 <?php
 namespace Koselig\Providers;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Koselig\Support\Action;
@@ -46,10 +47,16 @@ class WordpressServiceProvider extends ServiceProvider
         $table_prefix = 'wp_';
         $this->setDatabaseConstants($table_prefix);
 
+        // Wordpress attempts to define a method that Laravel should handle (__)
+        // so we rename WP's to __wp().
+        $this->patchWordpressL10n();
+
         require ABSPATH . 'wp-settings.php';
 
         // Set up the WordPress query.
-        wp();
+        if (!app()->runningInConsole() && !wp_installing()) {
+            wp();
+        }
 
         $this->triggerHooks();
 
@@ -120,6 +127,27 @@ class WordpressServiceProvider extends ServiceProvider
                 'before_title' => '<h2>',
                 'after_title' => '</h2>',
             ], $value));
+        });
+    }
+
+    /**
+     * Wordpress defines their methods without checking if
+     * the method is defined beforehand like Laravel does.
+     *
+     * We had the option to patch the `__` method that Wordpress
+     * tries to define to give it a unique name or lose Laravel's
+     * `__`. As Laravel's `__` is quite a bit more useful than
+     * Wordpress'.
+     */
+    protected function patchWordpressL10n() {
+        Cache::rememberForever('patch_wp_l10n', function () {
+            $path = ABSPATH . 'wp-includes' . DIRECTORY_SEPARATOR . 'l10n.php';
+
+            $original = file_get_contents($path);
+            $patched = str_replace('function __(', 'function __wp(', $original);
+            file_put_contents($path, $patched);
+
+            return true;
         });
     }
 

@@ -22,7 +22,7 @@ class Request extends BaseRequest
      *
      * @return Post
      */
-    public function post()
+    public function page()
     {
         return $this->post ?: $this->post = Post::find(Wordpress::id());
     }
