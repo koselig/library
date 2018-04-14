@@ -37,7 +37,7 @@ class WordpressServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      *
      * @SuppressWarnings(PHPMD.CamelCaseVariableName)
-
+     *
      * @return void
      */
     public function boot()
