@@ -54,7 +54,7 @@ class TemplateRoute extends Route
             return false;
         }
 
-        return $this->uri === $slug;
+        return $this->uri === 'template/' . $slug;
     }
 
     /**
