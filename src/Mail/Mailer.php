@@ -37,5 +37,7 @@ if (!function_exists('wp_mail')) {
                 }
             }
         });
+
+        return true;
     }
 }

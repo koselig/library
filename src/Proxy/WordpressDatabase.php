@@ -69,6 +69,28 @@ class WordpressDatabase extends wpdb
     }
 
     /**
+     * Determine if a database supports a particular feature.
+     *
+     * @see wpdb::has_cap()
+     * @param string $capability The feature to check for. Accepts 'collation',
+     *                           'group_concat', 'subqueries', 'set_charset',
+     *                           'utf8mb4', or 'utf8mb4_520'.
+     * @return int|false Whether the database feature is supported, false otherwise.
+     */
+    public function has_cap($capability) {
+        $capability = strtolower($capability);
+
+        switch ($capability) {
+            case 'set_charset':
+                return false;
+            case 'utf8mb4':
+                return strtolower(DB::connection()->getConfig('charset')) === $capability;
+            default:
+                return parent::has_cap($capability);
+        }
+    }
+
+    /**
      * Retrieves the MySQL server version.
      *
      * @return null|string Null on failure, version number on success.
