@@ -5,9 +5,7 @@ use Illuminate\Support\ServiceProvider;
 use Koselig\Auth\AuthServiceProvider;
 use Koselig\Hashing\HashServiceProvider;
 use Koselig\Mail\WordpressMailServiceProvider;
-use Koselig\Models\Post;
 use Koselig\Routing\RoutingServiceProvider;
-use Koselig\Support\Wordpress;
 
 /**
  * Registers all the other service providers used by this package.
