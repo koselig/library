@@ -183,8 +183,8 @@ class Routing
                 $action = ['uses' => $action];
             }
 
-            if (!empty(Route::getGroupStack())) {
-                $group = end(Route::getGroupStack());
+            if (!empty($stack = Route::getGroupStack())) {
+                $group = end($stack);
 
                 $action['uses'] = isset($group['namespace']) && strpos($action['uses'], '\\') !== 0 ?
                     $group['namespace'] . '\\' . $action['uses'] : $action['uses'];

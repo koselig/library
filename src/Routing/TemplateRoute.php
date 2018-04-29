@@ -41,7 +41,7 @@ class TemplateRoute extends Route
      */
     public function matches(Request $request, $includingMethod = true)
     {
-        $post = $request->post();
+        $post = $request->page();
 
         if (!$post) {
             // the page we are on either isn't in the CMS or doesn't have a template.
@@ -50,11 +50,11 @@ class TemplateRoute extends Route
 
         $slug = $post->getMeta('_wp_page_template');
 
-        if (!empty($this->getAction()['domain']) && !Wordpress::multisite($this->getAction()['domain'])) {
+        if (!empty($this->getAction('domain')) && !Wordpress::multisite($this->getAction('domain'))) {
             return false;
         }
 
-        return $this->uri === $slug;
+        return $this->uri === 'template/' . $slug;
     }
 
     /**

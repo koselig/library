@@ -131,7 +131,7 @@ class Wordpress
      */
     public static function site()
     {
-        return get_current_site();
+        return \get_current_site();
     }
 
     /**
