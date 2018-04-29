@@ -4,6 +4,7 @@ namespace Koselig\Providers;
 use Illuminate\Support\ServiceProvider;
 use Koselig\Models\Post;
 use Koselig\Proxy\Query;
+use Koselig\Support\Wordpress;
 
 /**
  * Service provider that provides bindings for the several queries that Wordpress
@@ -32,6 +33,10 @@ class QueryServiceProvider extends ServiceProvider
             $post = $GLOBALS['post']->ID;
 
             return $this->cached[$post] ?? $this->cached[$post] = Post::find($post);
+        });
+
+        $this->app->singleton(Post::class, function () {
+            return Post::find(Wordpress::id());
         });
     }
 }
