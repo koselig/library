@@ -33,7 +33,7 @@ class RecursiveMenuIterator implements RecursiveIterator
 
             // only have nodes without a parent at the top level of the tree
             $this->items = collect($itemsArray)->filter(function ($item) {
-                return $item->menu_item_parent == 0;
+                return $item->menu_item_parent === 0 || $item->menu_item_parent === '0';
             })->reverse()->values();
         } else {
             $this->items = $menu;
