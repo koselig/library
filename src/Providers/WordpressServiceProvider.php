@@ -139,7 +139,8 @@ class WordpressServiceProvider extends ServiceProvider
      * `__`. As Laravel's `__` is quite a bit more useful than
      * Wordpress'.
      */
-    protected function patchWordpressL10n() {
+    protected function patchWordpressL10n()
+    {
         Cache::rememberForever('patch_wp_l10n', function () {
             $path = ABSPATH . 'wp-includes' . DIRECTORY_SEPARATOR . 'l10n.php';
 
