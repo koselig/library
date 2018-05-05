@@ -2,6 +2,7 @@
 namespace Koselig\Providers;
 
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
 /**
@@ -40,5 +41,8 @@ class WordpressTemplatingServiceProvider extends ServiceProvider
                 return "<?php gravity_form({$expression}); ?>";
             });
         }
+
+        View::addNamespace('theme',
+                           base_path() . '/resources/views/themes/' . wp_get_theme()->stylesheet);
     }
 }
