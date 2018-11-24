@@ -4,6 +4,7 @@ namespace Koselig\Providers;
 use Illuminate\Support\ServiceProvider;
 use Koselig\Auth\AuthServiceProvider;
 use Koselig\Hashing\HashServiceProvider;
+use Koselig\Http\Request;
 use Koselig\Mail\WordpressMailServiceProvider;
 use Koselig\Routing\RoutingServiceProvider;
 
@@ -21,6 +22,9 @@ class KoseligServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        // override request() method to provide our Request
+        $this->app->alias('request', Request::class);
+
         // Generic service providers
         $this->app->register(WordpressMailServiceProvider::class);
         $this->app->register(WordpressServiceProvider::class);
@@ -38,5 +42,17 @@ class KoseligServiceProvider extends ServiceProvider
 
         // Hashing service provider
         $this->app->register(HashServiceProvider::class);
+    }
+
+    /**
+     * Perform post-registration booting of services.
+     *
+     * @return void
+     */
+    public function boot()
+    {
+        $this->publishes([
+            __DIR__ . '/../../public/wp-config.php' => public_path()
+        ], 'public');
     }
 }

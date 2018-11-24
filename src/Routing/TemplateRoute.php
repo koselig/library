@@ -2,7 +2,8 @@
 namespace Koselig\Routing;
 
 use Illuminate\Routing\Route;
-use Koselig\Http\Request;
+use Illuminate\Http\Request;
+use Koselig\Http\Request as KoseligRequest;
 use Koselig\Models\Post;
 use Koselig\Support\Wordpress;
 use ReflectionFunction;
@@ -41,7 +42,7 @@ class TemplateRoute extends Route
      */
     public function matches(Request $request, $includingMethod = true)
     {
-        $post = $request->page();
+        $post = $request instanceof KoseligRequest ? $request->page() : null;
 
         if (!$post) {
             // the page we are on either isn't in the CMS or doesn't have a template.

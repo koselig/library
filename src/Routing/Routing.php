@@ -2,6 +2,7 @@
 namespace Koselig\Routing;
 
 use Illuminate\Container\Container;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 
 class Routing
@@ -169,6 +170,57 @@ class Routing
     }
 
     /**
+     * Determine if the action is routing to a controller.
+     *
+     * @param  array  $action
+     * @return bool
+     */
+    protected function actionReferencesController($action)
+    {
+        if (!$action instanceof \Closure) {
+            return is_string($action) || (isset($action['uses']) && is_string($action['uses']));
+        }
+        return false;
+    }
+
+    /**
+     * Prepend the last group namespace onto the use clause.
+     *
+     * @param  string  $class
+     * @return string
+     */
+    protected function prependGroupNamespace($class)
+    {
+        $group = end($this->groupStack);
+        return isset($group['namespace']) && strpos($class, '\\') !== 0
+            ? $group['namespace'].'\\'.$class : $class;
+    }
+
+    /**
+     * Add a controller based route action to the action array.
+     *
+     * @param  array|string  $action
+     * @return array
+     */
+    protected function convertToControllerAction($action)
+    {
+        if (is_string($action)) {
+            $action = ['uses' => $action];
+        }
+        // Here we'll merge any group "uses" statement if necessary so that the action
+        // has the proper clause for this property. Then we can simply set the name
+        // of the controller on the action and return the action array for usage.
+        if (!empty($this->groupStack)) {
+            $action['uses'] = $this->prependGroupNamespace($action['uses']);
+        }
+        // Here we will set this controller name on the action array just so we always
+        // have a copy of it for reference if we need it. This can be used while we
+        // search for a controller name or do some other type of fetch operation.
+        $action['controller'] = $action['uses'];
+        return $action;
+    }
+
+    /**
      * Format <pre>$action</pre> in a nice way to pass to the {@link \Illuminate\Routing\RouteCollection}.
      *
      * @param $action
@@ -177,20 +229,8 @@ class Routing
      */
     protected function formatAction($action)
     {
-        if (!($action instanceof $action) && (is_string($action) || (isset($action['uses'])
-                    && is_string($action['uses'])))) {
-            if (is_string($action)) {
-                $action = ['uses' => $action];
-            }
-
-            if (!empty($stack = Route::getGroupStack())) {
-                $group = end($stack);
-
-                $action['uses'] = isset($group['namespace']) && strpos($action['uses'], '\\') !== 0 ?
-                    $group['namespace'] . '\\' . $action['uses'] : $action['uses'];
-            }
-
-            $action['controller'] = $action['uses'];
+        if ($this->actionReferencesController($action)) {
+            $action = $this->convertToControllerAction($action);
         }
 
         if (!is_array($action)) {
@@ -202,6 +242,41 @@ class Routing
         }
 
         return $action;
+    }
+
+    /**
+     * Add the necessary where clauses to the route based on its initial registration.
+     *
+     * @param  \Illuminate\Routing\Route  $route
+     * @return \Illuminate\Routing\Route
+     */
+    protected function addWhereClausesToRoute($route)
+    {
+        $route->where(array_merge(
+            Route::getPatterns(), $route->getAction()['where'] ?? []
+        ));
+        return $route;
+    }
+
+    /**
+     * Determine if the router currently has a group stack.
+     *
+     * @return bool
+     */
+    public function hasGroupStack()
+    {
+        return !empty($this->groupStack);
+    }
+
+    /**
+     * Merge the group stack with the controller action.
+     *
+     * @param  \Illuminate\Routing\Route  $route
+     * @return void
+     */
+    protected function mergeGroupAttributesIntoRoute($route)
+    {
+        $route->setAction($this->mergeWithLastGroup($route->getAction()));
     }
 
     /**
@@ -217,15 +292,10 @@ class Routing
         // If we have groups that need to be merged, we will merge them now after this
         // route has already been created and is ready to go. After we're done with
         // the merge we will be ready to return the route back out to the caller.
-        if (Route::hasGroupStack()) {
-            $action = Route::mergeWithLastGroup($route->getAction());
-
-            $route->setAction($action);
+        if ($this->hasGroupStack()) {
+            $this->mergeGroupAttributesIntoRoute($route);
         }
-
-        $where = isset($route->getAction()['where']) ? $route->getAction()['where'] : [];
-
-        $route->where(array_merge(Route::getPatterns(), $where));
+        $this->addWhereClausesToRoute($route);
 
         return $route;
     }
