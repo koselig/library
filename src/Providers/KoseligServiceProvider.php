@@ -52,7 +52,7 @@ class KoseligServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../public/wp-config.php' => public_path()
+            __DIR__ . '/../../public/wp-config.php' => public_path(),
         ], 'public');
     }
 }

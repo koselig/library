@@ -1,8 +1,8 @@
 <?php
 namespace Koselig\Routing;
 
-use Illuminate\Routing\Route;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Koselig\Http\Request as KoseligRequest;
 use Koselig\Models\Post;
 use Koselig\Support\Wordpress;

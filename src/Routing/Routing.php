@@ -170,9 +170,20 @@ class Routing
     }
 
     /**
+     * Determine if the router currently has a group stack.
+     *
+     * @return bool
+     */
+    public function hasGroupStack()
+    {
+        return !empty($this->groupStack);
+    }
+
+    /**
      * Determine if the action is routing to a controller.
      *
      * @param  array  $action
+     *
      * @return bool
      */
     protected function actionReferencesController($action)
@@ -180,6 +191,7 @@ class Routing
         if (!$action instanceof \Closure) {
             return is_string($action) || (isset($action['uses']) && is_string($action['uses']));
         }
+
         return false;
     }
 
@@ -187,19 +199,22 @@ class Routing
      * Prepend the last group namespace onto the use clause.
      *
      * @param  string  $class
+     *
      * @return string
      */
     protected function prependGroupNamespace($class)
     {
         $group = end($this->groupStack);
+
         return isset($group['namespace']) && strpos($class, '\\') !== 0
-            ? $group['namespace'].'\\'.$class : $class;
+            ? $group['namespace'] . '\\' . $class : $class;
     }
 
     /**
      * Add a controller based route action to the action array.
      *
      * @param  array|string  $action
+     *
      * @return array
      */
     protected function convertToControllerAction($action)
@@ -217,6 +232,7 @@ class Routing
         // have a copy of it for reference if we need it. This can be used while we
         // search for a controller name or do some other type of fetch operation.
         $action['controller'] = $action['uses'];
+
         return $action;
     }
 
@@ -248,6 +264,7 @@ class Routing
      * Add the necessary where clauses to the route based on its initial registration.
      *
      * @param  \Illuminate\Routing\Route  $route
+     *
      * @return \Illuminate\Routing\Route
      */
     protected function addWhereClausesToRoute($route)
@@ -255,23 +272,15 @@ class Routing
         $route->where(array_merge(
             Route::getPatterns(), $route->getAction()['where'] ?? []
         ));
-        return $route;
-    }
 
-    /**
-     * Determine if the router currently has a group stack.
-     *
-     * @return bool
-     */
-    public function hasGroupStack()
-    {
-        return !empty($this->groupStack);
+        return $route;
     }
 
     /**
      * Merge the group stack with the controller action.
      *
      * @param  \Illuminate\Routing\Route  $route
+     *
      * @return void
      */
     protected function mergeGroupAttributesIntoRoute($route)
