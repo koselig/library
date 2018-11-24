@@ -67,4 +67,3 @@ $app->bootstrapWith([
     Illuminate\Foundation\Bootstrap\RegisterProviders::class,
     Illuminate\Foundation\Bootstrap\BootProviders::class,
 ]);
-
