@@ -201,7 +201,7 @@ class Post extends Model
      */
     public function getExcerptAttribute()
     {
-        return Action::filter('get_the_excerpt', $this->post_excerpt);
+        return Action::filter('the_excerpt', $this->post_excerpt);
     }
 
     /**
