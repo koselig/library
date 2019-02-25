@@ -1,10 +1,8 @@
 <?php
 namespace Koselig\Routing;
 
-use Illuminate\Routing\Exceptions\UrlGenerationException;
-use Illuminate\Routing\Route;
 use Illuminate\Http\Request;
-use Koselig\Http\Request as KoseligRequest;
+use Illuminate\Routing\Route;
 use Koselig\Models\Post;
 use Koselig\Support\Wordpress;
 use ReflectionFunction;
