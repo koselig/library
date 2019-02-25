@@ -1,7 +1,7 @@
 {
     "name": "koselig/library",
     "description": "Integrate Wordpress into Laravel seamlessly",
-    "license": "WTFPL",
+    "license": "(0BSD or WTFPL)",
     "authors": [
         {
             "name": "Jordan Doyle",
