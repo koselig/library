@@ -80,6 +80,19 @@ class Routing
         return Route::getRoutes()->add($route);
     }
 
+    public function posts($action)
+    {
+        $action = $this->formatAction($action);
+
+        $route = (new PostsRoute($action['method'], $action))
+            ->setRouter(app('router'))
+            ->setContainer(app(Container::class));
+
+        $route = $this->applyStack($route);
+
+        return Route::getRoutes()->add($route);
+    }
+
     /**
      * Register a new archive route with the router. Optionally supply
      * the post types you'd like to supply with this route.
